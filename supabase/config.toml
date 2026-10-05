@@ -1,0 +1,10 @@
+# Minimale Supabase-CLI-Konfiguration für das Deployment per GitHub Action.
+project_id = "obmanns-kinder"
+
+[functions.admin-users]
+verify_jwt = true
+
+# Wird von der Datenbank mit eigenem Secret aufgerufen und liefert per GET nur den
+# öffentlichen Schlüssel – daher ohne JWT-Prüfung am Gateway.
+[functions.push]
+verify_jwt = false

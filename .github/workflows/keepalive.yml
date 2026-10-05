@@ -1,0 +1,39 @@
+# Kostenlose Supabase-Projekte werden nach 7 Tagen ohne Aktivität pausiert.
+# Dieser Ablauf schickt alle 2 Tage eine winzige Anfrage, damit das nicht passiert.
+name: Supabase wachhalten
+
+on:
+  schedule:
+    - cron: "17 5 */2 * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Datenbank anpingen
+        env:
+          URL: ${{ vars.VITE_SUPABASE_URL }}
+          KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$URL" ] || [ -z "$KEY" ]; then
+            echo "::warning::VITE_SUPABASE_URL oder VITE_SUPABASE_ANON_KEY fehlt."
+            exit 0
+          fi
+          code=$(curl -s -o /tmp/out -w "%{http_code}" -X POST "$URL/rest/v1/rpc/keep_alive" \
+            -H "apikey: $KEY" -H "Content-Type: application/json" -d '{}')
+          echo "Antwort: $code $(cat /tmp/out)"
+          if [ "$code" != "200" ]; then
+            echo "::error::Supabase antwortet nicht (HTTP $code). Ist das Projekt pausiert? Im Supabase-Dashboard wieder starten."
+            exit 1
+          fi
+
+      # GitHub schaltet geplante Abläufe in Repos ohne Commits nach 60 Tagen ab.
+      # Das erneute Aktivieren setzt diese Frist zurück.
+      - name: Zeitplan aktiv halten
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow enable keepalive.yml --repo "${{ github.repository }}" || true

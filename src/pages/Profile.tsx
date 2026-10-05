@@ -1,0 +1,208 @@
+import { useEffect, useState } from "react";
+import { useAuth } from "../lib/auth";
+import { useLoad } from "../lib/hooks";
+import { monthName } from "../lib/format";
+import { disablePush, enablePush, isIos, pushState, type PushState } from "../lib/push";
+import { navigate } from "../lib/router";
+import { errorText, rpc, supabase } from "../lib/supabase";
+import type { LeaderRow } from "../lib/types";
+import { ErrorBox, Loading, Page, toast } from "../components/ui";
+
+type CatStat = { category_id: number; name: string; icon: string; answered: number; correct: number; rate: number | null };
+type Leader = { category_id: number; name: string; icon: string; user_id: string | null; display_name: string | null; answered: number | null; rate: number | null };
+type Winner = { month: string; points: number; user_id: string; profiles: { display_name: string } | null };
+
+export function ProfilePage() {
+  const { profile, signOut, reloadProfile } = useAuth();
+  const [period, setPeriod] = useState<"month" | "all">("month");
+  const board = useLoad(() => rpc<LeaderRow[]>("leaderboard", { p_period: period }), [period]);
+  const stats = useLoad(() => rpc<CatStat[]>("category_stats"));
+  const leaders = useLoad(() => rpc<Leader[]>("category_leaders"));
+  const winners = useLoad(async () => {
+    const { data, error } = await supabase
+      .from("monthly_results")
+      .select("month, points, user_id, profiles(display_name)")
+      .eq("rank", 1)
+      .order("month", { ascending: false })
+      .limit(12);
+    if (error) throw error;
+    return data as unknown as Winner[];
+  });
+
+  const [push, setPush] = useState<PushState | null>(null);
+  const [pushBusy, setPushBusy] = useState(false);
+  useEffect(() => {
+    pushState().then(setPush);
+  }, []);
+
+  const [name, setName] = useState(profile!.display_name);
+  async function saveName() {
+    const { error } = await supabase.from("profiles").update({ display_name: name.trim() }).eq("id", profile!.id);
+    if (error) return toast(errorText(error));
+    await reloadProfile();
+    toast("Name gespeichert.");
+  }
+
+  async function togglePush() {
+    setPushBusy(true);
+    try {
+      if (push === "on") await disablePush();
+      else await enablePush();
+      setPush(await pushState());
+    } catch (e) {
+      toast((e as Error).message);
+    } finally {
+      setPushBusy(false);
+    }
+  }
+
+  const rows = (board.data ?? []).filter((r) => period === "all" || r.games > 0);
+
+  return (
+    <Page title={profile!.display_name}>
+      <section className="section">
+        <div className="section-head">
+          <h2>Rangliste</h2>
+          <div className="segmented segmented-small" role="tablist">
+            <button role="tab" aria-selected={period === "month"} className={period === "month" ? "seg active" : "seg"} onClick={() => setPeriod("month")}>
+              {monthName(new Date()).split(" ")[0]}
+            </button>
+            <button role="tab" aria-selected={period === "all"} className={period === "all" ? "seg active" : "seg"} onClick={() => setPeriod("all")}>
+              Gesamt
+            </button>
+          </div>
+        </div>
+        <ErrorBox error={board.error} retry={board.reload} />
+        {board.loading && !board.data ? (
+          <Loading />
+        ) : rows.length === 0 ? (
+          <p className="muted">In diesem Monat wurde noch kein Duell beendet.</p>
+        ) : (
+          <table className="board">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col" className="num">Punkte</th>
+                <th scope="col" className="num">Siege</th>
+                <th scope="col" className="num">Quote</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r, i) => (
+                <tr key={r.user_id} className={r.user_id === profile!.id ? "me" : ""}>
+                  <td>{i + 1}</td>
+                  <td>{r.display_name}</td>
+                  <td className="num strong">{r.points}</td>
+                  <td className="num">
+                    {r.wins}/{r.games}
+                  </td>
+                  <td className="num">{r.correct_rate} %</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        <p className="muted small">Duell: Sieg 3, Unentschieden 1 Punkt. Challenge: Platz 1–3 bekommt 3/2/1 Punkte.</p>
+      </section>
+
+      {(winners.data ?? []).length > 0 && (
+        <section className="section">
+          <h2>Monatssieger</h2>
+          <ul className="plain-list">
+            {winners.data!.map((w) => (
+              <li key={w.month + w.user_id}>
+                <span>{monthName(w.month)}</span>
+                <strong>
+                  {w.profiles?.display_name} · {w.points} P.
+                </strong>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section className="section">
+        <h2>Deine Trefferquote</h2>
+        {stats.loading && !stats.data ? (
+          <Loading />
+        ) : (
+          <ul className="bars">
+            {(stats.data ?? []).map((s) => (
+              <li key={s.category_id}>
+                <span className="bars-label">
+                  {s.icon} {s.name}
+                </span>
+                <span className="bars-track" aria-hidden="true">
+                  <span className="bars-fill" style={{ width: `${s.rate ?? 0}%` }} />
+                </span>
+                <span className="bars-value">{s.answered ? `${s.rate} %` : "–"}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {(leaders.data ?? []).some((l) => l.user_id) && (
+        <section className="section">
+          <h2>Schützenkönige je Kategorie</h2>
+          <ul className="plain-list">
+            {leaders.data!
+              .filter((l) => l.user_id)
+              .map((l) => (
+                <li key={l.category_id}>
+                  <span>
+                    {l.icon} {l.name}
+                  </span>
+                  <strong>
+                    {l.display_name} · {l.rate} %
+                  </strong>
+                </li>
+              ))}
+          </ul>
+          <p className="muted small">Ab 5 beantworteten Fragen in der Kategorie.</p>
+        </section>
+      )}
+
+      <section className="section">
+        <h2>Einstellungen</h2>
+        <div className="setting">
+          <div>
+            <p className="strong">Benachrichtigungen</p>
+            <p className="muted small">
+              {push === "on" && "An auf diesem Gerät."}
+              {push === "off" && "Bei Herausforderungen, Ergebnissen und zum Monatsende."}
+              {push === "denied" && "Im Browser blockiert. Erlaube Benachrichtigungen in den Website-Einstellungen."}
+              {push === "needs-install" && "Auf dem iPhone: Teilen → „Zum Home-Bildschirm“, dann die App von dort öffnen."}
+              {push === "unsupported" && (isIos() ? "Dein iPhone braucht mindestens iOS 16.4." : "Dieser Browser unterstützt keine Benachrichtigungen.")}
+            </p>
+          </div>
+          {(push === "on" || push === "off") && (
+            <button className={push === "on" ? "switch on" : "switch"} role="switch" aria-checked={push === "on"} disabled={pushBusy} onClick={togglePush}>
+              <span className="visually-hidden">Benachrichtigungen</span>
+            </button>
+          )}
+        </div>
+        <div className="field-inline">
+          <label className="field">
+            <span>Anzeigename</span>
+            <input value={name} maxLength={30} onChange={(e) => setName(e.target.value)} />
+          </label>
+          <button className="btn" disabled={!name.trim() || name.trim() === profile!.display_name} onClick={saveName}>
+            Speichern
+          </button>
+        </div>
+        <p className="muted small">Benutzername: {profile!.username}. Passwort ändern geht über den Obmann.</p>
+      </section>
+
+      {profile!.is_admin && (
+        <button className="btn btn-block" onClick={() => navigate("/admin")}>
+          Admin-Bereich
+        </button>
+      )}
+      <button className="btn btn-ghost btn-block" onClick={signOut}>
+        Abmelden
+      </button>
+    </Page>
+  );
+}
