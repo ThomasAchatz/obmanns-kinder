@@ -29,6 +29,10 @@ jobs:
       - name: Abhängigkeiten installieren
         run: npm install --no-audit --no-fund
 
+      - name: Typen prüfen
+        run: npx tsc --noEmit --pretty false
+        continue-on-error: true
+
       - name: App bauen
         run: npm run build
         env:
