@@ -138,3 +138,39 @@ export function Toaster() {
     </div>
   );
 }
+
+/** Aufklappbarer Abschnitt. Merkt sich pro Gerät, ob er offen war. */
+export function Fold({ id, title, badge, children }: { id: string; title: string; badge?: ReactNode; children: ReactNode }) {
+  const key = `obmanns-fold-${id}`;
+  const [open, setOpen] = useState(() => {
+    try {
+      return localStorage.getItem(key) === "1";
+    } catch {
+      return false;
+    }
+  });
+  return (
+    <details
+      className="fold"
+      open={open}
+      onToggle={(e) => {
+        const o = (e.currentTarget as HTMLDetailsElement).open;
+        setOpen(o);
+        try {
+          localStorage.setItem(key, o ? "1" : "0");
+        } catch {
+          /* privater Modus */
+        }
+      }}
+    >
+      <summary>
+        <h2>{title}</h2>
+        {badge}
+        <svg className="fold-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </summary>
+      <div className="fold-body">{children}</div>
+    </details>
+  );
+}

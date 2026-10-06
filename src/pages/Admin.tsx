@@ -6,7 +6,7 @@ import { generateVapidKeys, randomSecret } from "../lib/push";
 import { navigate } from "../lib/router";
 import { errorText, invoke, supabase } from "../lib/supabase";
 import type { Category } from "../lib/types";
-import { ErrorBox, Loading, Page, toast } from "../components/ui";
+import { ErrorBox, Fold, Loading, Page, toast } from "../components/ui";
 import { AdminStats } from "../components/AdminStats";
 
 type AdminUser = { id: string; username: string; display_name: string; is_admin: boolean; blocked: boolean; last_sign_in_at: string | null };
@@ -98,11 +98,7 @@ function NewQuestions() {
   const fresh = rows.filter((q) => new Date(q.created_at).getTime() > seen).length;
 
   return (
-    <section className="section">
-      <div className="section-head">
-        <h2>Neue Fragen von Spielern</h2>
-        {fresh > 0 && <span className="pill pill-brass">{fresh} neu</span>}
-      </div>
+    <Fold id="neue-fragen" title="Neue Fragen von Spielern" badge={fresh > 0 ? <span className="pill pill-brass">{fresh} neu</span> : undefined}>
       <ErrorBox error={list.error} retry={list.reload} />
       {list.loading && !list.data ? (
         <Loading />
@@ -137,7 +133,7 @@ function NewQuestions() {
           Ältere anzeigen
         </button>
       )}
-    </section>
+    </Fold>
   );
 }
 
@@ -190,8 +186,7 @@ function Users() {
   }
 
   return (
-    <section className="section">
-      <h2>Spieler</h2>
+    <Fold id="spieler" title="Spieler" badge={users.data ? <span className="fold-count">{users.data.length}</span> : undefined}>
       <ErrorBox error={users.error} retry={users.reload} />
       {users.loading && !users.data ? (
         <Loading />
@@ -257,7 +252,7 @@ function Users() {
           {busy ? "Anlegen …" : "Spieler anlegen"}
         </button>
       </form>
-    </section>
+    </Fold>
   );
 }
 
@@ -283,8 +278,11 @@ function Reports() {
   }
 
   return (
-    <section className="section">
-      <h2>Gemeldete Fragen</h2>
+    <Fold
+      id="meldungen"
+      title="Gemeldete Fragen"
+      badge={(reports.data ?? []).length > 0 ? <span className="pill pill-red">{reports.data!.length} offen</span> : undefined}
+    >
       <ErrorBox error={reports.error} retry={reports.reload} />
       {reports.loading && !reports.data ? (
         <Loading />
@@ -317,7 +315,7 @@ function Reports() {
           ))}
         </ul>
       )}
-    </section>
+    </Fold>
   );
 }
 
@@ -349,8 +347,7 @@ function Categories() {
   }
 
   return (
-    <section className="section">
-      <h2>Kategorien</h2>
+    <Fold id="kategorien" title="Kategorien" badge={cats.data ? <span className="fold-count">{cats.data.length}</span> : undefined}>
       {cats.loading && !cats.data ? (
         <Loading />
       ) : (
@@ -369,7 +366,7 @@ function Categories() {
         <button className="btn btn-small">Hinzufügen</button>
       </form>
       <p className="muted small">Änderungen werden beim Verlassen des Feldes gespeichert.</p>
-    </section>
+    </Fold>
   );
 }
 
@@ -387,8 +384,7 @@ function PushSetup() {
     : "";
 
   return (
-    <section className="section">
-      <h2>Push einrichten</h2>
+    <Fold id="push" title="Push einrichten">
       <p className="muted small">Nur einmal nötig. Die Schlüssel werden hier im Browser erzeugt und nirgends gespeichert.</p>
       {!keys ? (
         <button className="btn" onClick={make}>
@@ -419,6 +415,6 @@ function PushSetup() {
           </li>
         </ol>
       )}
-    </section>
+    </Fold>
   );
 }

@@ -1,5 +1,5 @@
 /* Service Worker für Obmanns Kinder: Offline-Cache, Updates und Push. */
-const CACHE = "ok-v5";
+const CACHE = "ok-v6";
 const SCOPE = self.registration.scope; // z. B. https://name.github.io/obmanns-kinder/
 
 self.addEventListener("install", (event) => {

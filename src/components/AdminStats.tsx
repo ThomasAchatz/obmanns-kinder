@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLoad } from "../lib/hooks";
 import { timeAgo } from "../lib/format";
 import { rpc } from "../lib/supabase";
-import { ErrorBox, Loading } from "./ui";
+import { ErrorBox, Fold, Loading } from "./ui";
 
 // Überblick für den Obmann: wer nutzt die App, wer spielt mit wem, wer gewinnt.
 
@@ -69,9 +69,8 @@ export function AdminStats() {
   const pairs = s ? (allPairs ? s.pairs : s.pairs.slice(0, 8)) : [];
 
   return (
-    <section className="section">
-      <div className="section-head">
-        <h2>Wer spielt?</h2>
+    <Fold id="statistik" title="Wer spielt?" badge={s ? <span className="fold-count">{active} von {s.players.length} aktiv</span> : undefined}>
+      <div className="fold-tools">
         <div className="segmented segmented-small" role="tablist" aria-label="Zeitraum">
           <button role="tab" aria-selected={days === 30} className={days === 30 ? "seg active" : "seg"} onClick={() => setDays(30)}>
             30 Tage
@@ -182,6 +181,6 @@ export function AdminStats() {
           )}
         </>
       ) : null}
-    </section>
+    </Fold>
   );
 }

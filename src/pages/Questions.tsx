@@ -4,6 +4,8 @@ import { navigate } from "../lib/router";
 import { rpc, supabase } from "../lib/supabase";
 import type { Question, QuestionStats, SongCounts } from "../lib/types";
 import { Icon } from "../components/Icon";
+import { QuestionSearch } from "../components/QuestionSearch";
+import { useState } from "react";
 import { Empty, ErrorBox, Loading, Page } from "../components/ui";
 
 type Count = { category_id: number; name: string; icon: string; total: number; mine: number };
@@ -13,6 +15,8 @@ export function QuestionsPage() {
   const categories = useCategories();
   const counts = useLoad(() => rpc<Count[]>("question_counts"));
   const songs = useLoad(() => rpc<SongCounts>("song_counts"));
+  const [term, setTerm] = useState("");
+  const searching = term.trim().length >= 2;
   const mine = useLoad(async () => {
     const [{ data, error }, stats] = await Promise.all([
       supabase
@@ -38,6 +42,9 @@ export function QuestionsPage() {
 
   return (
     <Page title="Fragen">
+      <QuestionSearch term={term} onTerm={setTerm} />
+      {!searching && (
+        <>
       <button className="btn btn-primary btn-block" onClick={() => navigate("/fragen/neu")}>
         Neue Frage schreiben
       </button>
@@ -111,6 +118,8 @@ export function QuestionsPage() {
           </div>
         )}
       </section>
+        </>
+      )}
     </Page>
   );
 }

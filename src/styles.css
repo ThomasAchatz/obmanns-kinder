@@ -1443,6 +1443,89 @@ form.cat-edit {
   font-family: ui-monospace, monospace;
 }
 
+/* ---------- Aufklappbare Abschnitte ---------- */
+.fold {
+  border-bottom: 1px solid var(--border);
+}
+.fold:first-of-type {
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+.fold > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 8px 2px;
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.fold > summary::-webkit-details-marker {
+  display: none;
+}
+.fold > summary h2 {
+  margin: 0;
+  flex: 1;
+  font-size: 1.0625rem;
+}
+.fold-count {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.fold-chevron {
+  flex: none;
+  color: var(--faint);
+  transition: transform 0.2s;
+}
+.fold[open] > summary .fold-chevron {
+  transform: rotate(180deg);
+}
+.fold-body {
+  padding: 0 0 20px;
+}
+.fold-tools {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+/* ---------- Fragensuche ---------- */
+.qsearch {
+  margin-bottom: 14px;
+}
+.qsearch .search-field {
+  margin-top: 4px;
+}
+.qsearch-hint {
+  margin: 4px 2px 0;
+}
+.qsearch-results {
+  margin-top: 8px;
+}
+.qsearch-card mark {
+  background: var(--accent-soft);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+  box-shadow: inset 0 -1px 0 var(--accent);
+}
+.qsearch-card .play-category .pill {
+  margin-left: 6px;
+}
+.qsearch-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+  margin: 6px 0 0;
+}
+.qsearch-meta .link-btn {
+  font-size: 0.8125rem;
+  padding: 0;
+}
+
 /* ---------- Admin-Statistik ---------- */
 .stat-row {
   display: grid;
