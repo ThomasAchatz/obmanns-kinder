@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v4
         if: steps.check.outputs.ready == 'true'
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         if: steps.check.outputs.ready == 'true'
         with:
           distribution: temurin
@@ -58,6 +58,13 @@ jobs:
         if: steps.check.outputs.ready == 'true'
         run: |
           npm install -g @bubblewrap/cli 2>&1 | tail -3
+          # Bubblewrap erwartet sdkmanager unter <sdk>/bin – auf den GitHub-Runnern liegt er
+          # unter cmdline-tools/latest/bin. Verlinken, dann passt die Prüfung.
+          if [ ! -e "$ANDROID_HOME/bin" ]; then
+            sudo ln -s "$ANDROID_HOME/cmdline-tools/latest/bin" "$ANDROID_HOME/bin"
+          fi
+          sudo chown -R "$(id -u)" "$ANDROID_HOME/build-tools" "$ANDROID_HOME/platforms" || true
+          yes | "$ANDROID_HOME/bin/sdkmanager" --sdk_root="$ANDROID_HOME" "build-tools;36.1.0" > /dev/null || true
           mkdir -p ~/.bubblewrap
           echo "{\"jdkPath\":\"$JAVA_HOME\",\"androidSdkPath\":\"$ANDROID_HOME\"}" > ~/.bubblewrap/config.json
           cat ~/.bubblewrap/config.json
