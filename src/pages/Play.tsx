@@ -14,9 +14,9 @@ const musicText: Record<Mode, string> = {
 };
 
 const modes: { id: Mode; title: string; text: string }[] = [
-  { id: "duel", title: "Duell", text: "Ein Freund, dieselben 5 Fragen aus 5 Kategorien. Du spielst zuerst." },
+  { id: "duel", title: "Duell", text: "Ein Freund, dieselben 5 Fragen. Du spielst zuerst." },
   { id: "challenge", title: "Gruppe", text: "Mehrere spielen dieselben 5 Fragen, die beste Runde gewinnt." },
-  { id: "solo", title: "Solo", text: "5 Fragen aus einer Kategorie zum Üben. Zählt nicht für die Rangliste." },
+  { id: "solo", title: "Solo", text: "5 Fragen zum Üben, aus deinen Lieblingskategorien oder gemischt. Zählt nicht für die Rangliste." },
 ];
 
 export function PlayPage() {
@@ -29,7 +29,7 @@ export function PlayPage() {
   const [mode, setMode] = useState<Mode>("duel");
   const [hard, setHard] = useState(() => window.location.hash.includes("hard=1"));
   const [picked, setPicked] = useState<string[]>([]);
-  const [category, setCategory] = useState<number | null>(null);
+  const [cats, setCats] = useState<number[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +40,7 @@ export function PlayPage() {
     else setPicked((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]));
   }
 
-  const ready = mode === "solo" ? kind === "music" || category != null : mode === "duel" ? picked.length === 1 : picked.length >= 1;
+  const ready = mode === "solo" ? true : mode === "duel" ? picked.length === 1 : picked.length >= 1;
 
   async function start() {
     setBusy(true);
@@ -53,7 +53,7 @@ export function PlayPage() {
       }
       const id = await rpc<number>("create_game", {
         p_mode: mode,
-        p_category_id: mode === "solo" ? category : null,
+        p_category_ids: cats.length ? cats : null,
         p_invitees: mode === "solo" ? [] : picked,
       });
       navigate(`/spiel/${id}`);
@@ -128,30 +128,7 @@ export function PlayPage() {
         </div>
       )}
 
-      {mode === "solo" && kind === "music" ? null : mode === "solo" ? (
-        <section className="section">
-          <h2>Kategorie</h2>
-          {categories.loading ? (
-            <Loading />
-          ) : (
-            <div className="choice-grid">
-              {(categories.data ?? []).map((c) => (
-                <button
-                  key={c.id}
-                  className={category === c.id ? "choice active" : "choice"}
-                  aria-pressed={category === c.id}
-                  onClick={() => setCategory(c.id)}
-                >
-                  <span className="choice-icon" aria-hidden="true">
-                    {c.icon}
-                  </span>
-                  {c.name}
-                </button>
-              ))}
-            </div>
-          )}
-        </section>
-      ) : (
+      {mode !== "solo" && (
         <section className="section">
           <div className="section-head">
             <h2>{mode === "duel" ? "Gegner" : "Wer spielt mit?"}</h2>
@@ -182,6 +159,40 @@ export function PlayPage() {
               ))}
             </div>
           )}
+        </section>
+      )}
+
+      {kind === "quiz" && (
+        <section className="section">
+          <h2>Kategorien</h2>
+          {categories.loading ? (
+            <Loading />
+          ) : (
+            <div className="chips" role="group" aria-label="Kategorien">
+              <button className={cats.length === 0 ? "chip active" : "chip"} aria-pressed={cats.length === 0} onClick={() => setCats([])}>
+                <span aria-hidden="true">🎲</span> Zufall
+              </button>
+              {(categories.data ?? []).map((c) => (
+                <button
+                  key={c.id}
+                  className={cats.includes(c.id) ? "chip active" : "chip"}
+                  aria-pressed={cats.includes(c.id)}
+                  onClick={() => setCats((x) => (x.includes(c.id) ? x.filter((y) => y !== c.id) : [...x, c.id]))}
+                >
+                  <span aria-hidden="true">{c.icon}</span> {c.name}
+                </button>
+              ))}
+            </div>
+          )}
+          <p className="muted small chips-hint">
+            {cats.length === 0
+              ? "5 Fragen aus 5 zufälligen Kategorien."
+              : cats.length === 1
+                ? `Alle 5 Fragen aus ${categories.data?.find((c) => c.id === cats[0])?.name ?? "dieser Kategorie"}.`
+                : cats.length >= 5
+                  ? `5 Fragen aus 5 deiner ${cats.length} Kategorien.`
+                  : `5 Fragen, verteilt auf deine ${cats.length} Kategorien.`}
+          </p>
         </section>
       )}
 

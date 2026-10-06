@@ -14,7 +14,7 @@ function title(g: GameListItem, me: string) {
     if (g.mode === "duel") return `Musik-Duell mit ${others[0]?.display_name ?? "?"}`;
     return `Musik-Challenge mit ${others.length} ${others.length === 1 ? "Person" : "Leuten"}`;
   }
-  if (g.mode === "solo") return `${g.category?.icon ?? ""} ${g.category?.name ?? "Solo-Quiz"}`;
+  if (g.mode === "solo") return g.category ? `${g.category.icon} ${g.category.name}` : "Solo-Quiz, gemischt";
   if (g.mode === "duel") return `Duell mit ${others[0]?.display_name ?? "?"}`;
   return `Challenge mit ${others.length} ${others.length === 1 ? "Person" : "Leuten"}`;
 }

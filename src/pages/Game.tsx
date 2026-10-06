@@ -67,7 +67,7 @@ function Intro({ game, onStart }: { game: GameDetails; onStart: () => void }) {
         )}
         {game.mode === "solo" && (
           <p className="lead">
-            {game.category?.icon} {game.category?.name}: 5 Fragen zum Üben.
+            {game.category ? `${game.category.icon} ${game.category.name}: 5 Fragen zum Üben.` : "5 gemischte Fragen zum Üben."}
           </p>
         )}
         <ul className="rules">
