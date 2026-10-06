@@ -555,6 +555,10 @@ textarea:focus {
   margin: 10px 0;
   background: var(--hair);
 }
+.play .stored-image {
+  max-height: 200px;
+  margin: 0 0 12px;
+}
 .stored-image.placeholder {
   height: 180px;
 }
@@ -808,7 +812,7 @@ div.notice {
   border-radius: 2px;
   background: var(--track);
   overflow: hidden;
-  margin: 8px 0 22px;
+  margin: 8px 0 16px;
 }
 .timer-fill {
   height: 100%;
@@ -824,28 +828,30 @@ div.notice {
   margin: 0 0 6px;
 }
 .play-question {
-  font-size: 1.45rem;
-  margin-bottom: 18px;
+  font-size: 1.3rem;
+  line-height: 1.2;
+  margin-bottom: 14px;
   overflow-wrap: anywhere;
 }
 
 .answers {
   display: grid;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 7px;
+  margin-top: 4px;
 }
 .answer {
   display: flex;
   align-items: center;
   gap: 12px;
   width: 100%;
-  min-height: 54px;
-  padding: 10px 14px;
+  min-height: 50px;
+  padding: 8px 14px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
   font: inherit;
+  font-size: 0.9375rem;
   text-align: left;
   cursor: pointer;
   overflow-wrap: anywhere;
@@ -902,15 +908,19 @@ div.notice {
 }
 
 .reveal {
-  margin-top: 18px;
-  padding: 16px;
+  margin-top: 12px;
+  padding: 12px 14px 6px;
   border-radius: var(--radius);
   background: var(--surface);
   border: 1px solid var(--border);
 }
 .reveal h2 {
-  font-size: 1.3rem;
-  margin-bottom: 6px;
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+}
+.reveal p {
+  font-size: 0.9375rem;
+  margin-bottom: 4px;
 }
 .reveal-hit h2 {
   color: var(--good);
@@ -921,12 +931,30 @@ div.notice {
 .reveal-explain {
   border-left: 2px solid var(--accent);
   padding-left: 10px;
-  margin: 10px 0;
+  margin: 6px 0;
   color: var(--muted);
 }
 
 .feedback {
-  margin: 6px 0 0;
+  margin: 2px 0 0;
+}
+
+/* „Nächste Frage“ bleibt immer unten sichtbar, ohne Scrollen */
+.play.has-next {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
+}
+.play-next {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 25;
+  padding: 10px 18px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--bg) 70%, color-mix(in srgb, var(--bg) 0%, transparent));
+}
+.play-next .btn {
+  max-width: calc(36rem - 36px);
+  margin: 0 auto;
 }
 .feedback-row {
   display: flex;
@@ -956,6 +984,19 @@ div.notice {
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 18px;
+}
+.points-note {
+  margin: -10px 0 18px;
+  font-size: 0.875rem;
+  color: var(--good);
+}
+.points-note.is-off {
+  color: var(--muted);
+}
+.day-status {
+  margin: 10px 0 4px;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
 }
 .duel-board {
   display: grid;

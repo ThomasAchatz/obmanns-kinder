@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useAuth } from "../lib/auth";
-import { useCategories, usePlayers } from "../lib/hooks";
+import { useCategories, useLoad, usePlayers } from "../lib/hooks";
 import { navigate } from "../lib/router";
 import { rpc } from "../lib/supabase";
-import type { Mode } from "../lib/types";
+import type { DayStatus, Mode } from "../lib/types";
 import { ErrorBox, Loading, Page } from "../components/ui";
 
 const modes: { id: Mode; title: string; text: string }[] = [
@@ -16,6 +16,7 @@ export function PlayPage() {
   const { profile } = useAuth();
   const players = usePlayers();
   const categories = useCategories();
+  const day = useLoad(() => rpc<DayStatus>("my_day_status"));
   const [mode, setMode] = useState<Mode>("duel");
   const [picked, setPicked] = useState<string[]>([]);
   const [category, setCategory] = useState<number | null>(null);
@@ -67,6 +68,11 @@ export function PlayPage() {
         ))}
       </div>
       <p className="lead">{modes.find((m) => m.id === mode)!.text}</p>
+      {mode !== "solo" && day.data && day.data.counted_games >= day.data.limit_games && (
+        <div className="notice">
+          Du hast heute schon {day.data.limit_games} Wertungsspiele. Weitere Spiele machen Spaß, bringen aber bis morgen keine Punkte.
+        </div>
+      )}
 
       {mode === "solo" ? (
         <section className="section">

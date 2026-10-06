@@ -77,6 +77,7 @@ export type GameDetails = {
   joker_used: boolean;
   can_nudge: boolean;
   can_close: boolean;
+  my_points: { points: number; raw_points: number; counted: boolean; day_index: number | null } | null;
   players: {
     user_id: string;
     display_name: string;
@@ -136,6 +137,8 @@ export type Fact = {
   author: { display_name: string } | null;
   fact_likes: { user_id: string }[];
 };
+
+export type DayStatus = { counted_games: number; points: number; limit_games: number; limit_points: number };
 
 export type LeaderRow = {
   user_id: string;

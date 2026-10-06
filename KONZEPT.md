@@ -14,6 +14,10 @@ Private Quiz-App für bis zu 10 Freunde. Vorbilder: Quizduell (asynchrones Duell
 | Gruppen-Challenge | Alle Eingeladenen spielen dieselben 5 Fragen, jeder wann er will. Endet, wenn alle gespielt haben oder der Ersteller schließt. | Platz 1–3: 3/2/1 Punkte (ab 2 Teilnehmern) |
 | Solo-Quiz | 5 Fragen aus einer gewählten Kategorie zum Üben. | zählt nicht |
 
+## Tageslimit
+
+Pro Spieler und Tag zählen nur die ersten 3 beendeten Duelle oder Challenges für die Rangliste, also höchstens 9 Punkte. Weiterspielen geht immer, bringt dann aber keine Punkte. Maßgeblich ist, wann ein Spiel fertig wurde (deutsche Zeit).
+
 ## Regeln für alle Modi
 
 - 30 Sekunden pro Frage, Zeit abgelaufen = falsch (2 Sekunden Netz-Toleranz).

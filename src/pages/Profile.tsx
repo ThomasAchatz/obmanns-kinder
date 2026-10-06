@@ -5,7 +5,7 @@ import { monthName } from "../lib/format";
 import { disablePush, enablePush, isIos, isStandalone, pushState, type PushState } from "../lib/push";
 import { navigate } from "../lib/router";
 import { errorText, rpc, supabase } from "../lib/supabase";
-import type { LeaderRow } from "../lib/types";
+import type { DayStatus, LeaderRow } from "../lib/types";
 import { ErrorBox, Loading, Page, toast } from "../components/ui";
 
 type CatStat = { category_id: number; name: string; icon: string; answered: number; correct: number; rate: number | null };
@@ -21,6 +21,7 @@ export function ProfilePage() {
   const { profile, signOut, reloadProfile } = useAuth();
   const [period, setPeriod] = useState<"month" | "all">("month");
   const board = useLoad(() => rpc<LeaderRow[]>("leaderboard", { p_period: period }), [period]);
+  const day = useLoad(() => rpc<DayStatus>("my_day_status"));
   const stats = useLoad(() => rpc<CatStat[]>("category_stats"));
   const leaders = useLoad(() => rpc<Leader[]>("category_leaders"));
   const winners = useLoad(async () => {
@@ -126,7 +127,15 @@ export function ProfilePage() {
             </tbody>
           </table>
         )}
-        <p className="muted small">Duell: Sieg 3, Unentschieden 1 Punkt. Challenge: Platz 1–3 bekommt 3/2/1 Punkte.</p>
+        {day.data && (
+          <p className="day-status">
+            Heute: {day.data.counted_games} von {day.data.limit_games} Wertungsspielen · {day.data.points} von {day.data.limit_points} Punkten
+          </p>
+        )}
+        <p className="muted small">
+          Duell: Sieg 3, Unentschieden 1 Punkt. Challenge: Platz 1–3 bekommt 3/2/1 Punkte. Pro Tag zählen nur die ersten 3 beendeten
+          Spiele, also höchstens 9 Punkte. Weiterspielen geht immer.
+        </p>
       </section>
 
       {(winners.data ?? []).length > 0 && (

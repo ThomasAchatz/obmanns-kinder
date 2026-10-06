@@ -174,7 +174,7 @@ function Player({ game, onFinished }: { game: GameDetails; onFinished: () => voi
   const urgent = remaining <= 8 && !result;
 
   return (
-    <main className="play">
+    <main className={result ? "play has-next" : "play"}>
       <div className="play-top">
         <button className="icon-btn" aria-label="Zurück zum Start" onClick={() => navigate("/")}>
           <Icon name="back" />
@@ -248,10 +248,14 @@ function Player({ game, onFinished }: { game: GameDetails; onFinished: () => voi
             {q.substitute && " · Ersatzfrage, weil die Originalfrage von dir ist"}
           </p>
           <QuestionFeedback questionId={result.question_id} initialVote={result.my_vote} />
+        </section>
+      )}
+      {result && (
+        <div className="play-next">
           <button className="btn btn-primary btn-block btn-big" onClick={() => (result.finished ? onFinished() : load())}>
             {result.finished ? "Zum Ergebnis" : "Nächste Frage"}
           </button>
-        </section>
+        </div>
       )}
     </main>
   );
@@ -302,6 +306,15 @@ function Result({ game, reload }: { game: GameDetails; reload: () => void }) {
   return (
     <Page title={modeLabel[game.mode]} back={() => navigate("/")}>
       <h2 className="result-headline">{headline}</h2>
+      {game.mode !== "solo" && game.status !== "open" && game.my_points && (
+        <p className={game.my_points.counted ? "points-note" : "points-note is-off"}>
+          {game.my_points.counted
+            ? `+${game.my_points.points} ${game.my_points.points === 1 ? "Punkt" : "Punkte"} · Wertungsspiel ${game.my_points.day_index} von 3 heute`
+            : game.my_points.day_index
+              ? `Keine Punkte: Dieses Spiel war dein ${game.my_points.day_index}. an diesem Tag, es zählen nur die ersten 3.`
+              : "Keine Punkte: Es hat nur eine Person gespielt."}
+        </p>
+      )}
 
       {game.mode === "duel" ? (
         <div className="duel-board">
