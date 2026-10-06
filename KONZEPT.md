@@ -35,6 +35,7 @@ Pro Spieler und Tag zählen nur die ersten 3 beendeten Duelle oder Challenges f�
 - Duell, Gruppen-Challenge und Solo wie beim Quiz. Eigene Rangliste und eigenes Tageslimit (3 Wertungsspiele pro Tag).
 - Startpaket: rund 270 Songs quer durch Pop, Rock, Deutschpop, NDW, Austropop, Schlager, Hip-Hop und Oldies (music/startpaket.json). Jeder kann Songs über die Suche ergänzen, eigene Songs bekommt man nie.
 - Ergebnis als Schallplatte: jede Rille ein Song, oben leuchtet der Interpret, unten der Titel.
+- **Hard-Mode** (beim Start wählbar, gilt für alle Mitspieler): keine Antworten zur Auswahl. Man tippt Titel oder Interpret (ab 3 Buchstaben) und wählt den Song aus einer Vorschlagsliste. Die Liste kommt aus dem Pool plus einem Katalog mit den bekanntesten Songs aller Pool-Interpreten (music/catalog.json, gebaut von scripts/build-catalog.mjs), sortiert alphabetisch. Wer nur den Interpreten erkennt, muss also trotzdem den Titel wissen. 45 Sekunden pro Song, Punkte und Rangliste wie im normalen Modus. Kleine Schreibunterschiede (Groß/klein, „Remastered“, Umlaute) zählen nicht.
 
 ## Fragen
 

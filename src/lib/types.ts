@@ -16,6 +16,7 @@ export type GameListItem = {
   id: number;
   mode: Mode;
   kind: Kind;
+  hard?: boolean;
   status: "open" | "finished" | "closed";
   created_at: string;
   finished_at: string | null;
@@ -160,6 +161,8 @@ export type CurrentSong = {
   total: number;
   preview_url: string | null;
   song_ref: number;
+  hard?: boolean;
+  seconds?: number;
   artist_options: string[];
   title_options: string[];
   seconds_left: number;
@@ -185,11 +188,14 @@ export type MusicAnswer = {
   artist_ok: boolean | null;
   title_ok: boolean | null;
   ms: number | null;
+  guess_artist?: string | null;
+  guess_title?: string | null;
 };
 
 export type MusicGameDetails = {
   id: number;
   mode: Mode;
+  hard?: boolean;
   status: "open" | "finished" | "closed";
   created_by: string;
   my_status: "pending" | "done";
@@ -228,3 +234,5 @@ export type SongSearchHit = {
   year: number | null;
   known: boolean;
 };
+
+export type SongPick = { artist: string; title: string };

@@ -88,6 +88,7 @@ export function GameCard({ game, onChanged }: { game: GameListItem; onChanged?: 
         <p className="game-card-mode">
           {game.kind === "music" && <Icon name="music" size={13} />}
           {game.kind === "music" ? musicModeLabel[game.mode] : modeLabel[game.mode]}
+          {game.hard && <span className="pill pill-hard">Hard</span>}
         </p>
         <h3>{title(game, me)}</h3>
         <p className="game-card-status">

@@ -27,6 +27,7 @@ export function PlayPage() {
   const day = useLoad(() => rpc<DayStatus>("my_day_status", { p_kind: kind }), [kind]);
   const songs = useLoad(() => rpc<SongCounts>("song_counts"));
   const [mode, setMode] = useState<Mode>("duel");
+  const [hard, setHard] = useState(() => window.location.hash.includes("hard=1"));
   const [picked, setPicked] = useState<string[]>([]);
   const [category, setCategory] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
@@ -46,7 +47,7 @@ export function PlayPage() {
     setError(null);
     try {
       if (kind === "music") {
-        const id = await rpc<number>("create_music_game", { p_mode: mode, p_invitees: mode === "solo" ? [] : picked });
+        const id = await rpc<number>("create_music_game", { p_mode: mode, p_invitees: mode === "solo" ? [] : picked, p_hard: hard });
         navigate(`/musik/${id}`);
         return;
       }
@@ -101,7 +102,26 @@ export function PlayPage() {
           </button>
         ))}
       </div>
-      <p className="lead">{kind === "music" ? musicText[mode] : modes.find((m) => m.id === mode)!.text}</p>
+      {kind === "music" && (
+        <div className="level-row">
+          <span className="level-label">Schwierigkeit</span>
+          <div className="segmented segmented-small" role="tablist" aria-label="Schwierigkeit">
+            <button role="tab" aria-selected={!hard} className={!hard ? "seg active" : "seg"} onClick={() => setHard(false)}>
+              Normal
+            </button>
+            <button role="tab" aria-selected={hard} className={hard ? "seg active" : "seg"} onClick={() => setHard(true)}>
+              Hard
+            </button>
+          </div>
+        </div>
+      )}
+      <p className="lead">
+        {kind === "music"
+          ? hard
+            ? musicText[mode].replace("Erst den Interpreten erraten, dann den Titel.", "Keine Antworten zur Auswahl: Song selbst eintippen, 45 Sekunden pro Song.")
+            : musicText[mode]
+          : modes.find((m) => m.id === mode)!.text}
+      </p>
       {mode !== "solo" && day.data && day.data.counted_games >= day.data.limit_games && (
         <div className="notice">
           Du hast heute schon {day.data.limit_games} {kind === "music" ? "Musik-Wertungsspiele" : "Wertungsspiele"}. Weitere Spiele machen Spaß, bringen aber bis morgen keine Punkte.
@@ -173,11 +193,8 @@ export function PlayPage() {
               ? "Songs werden gemischt …"
               : "Fragen werden gezogen …"
             : kind === "music"
-              ? mode === "duel"
-                ? "Musik-Duell starten"
-                : mode === "challenge"
-                  ? "Musik-Challenge starten"
-                  : "Songs anhören"
+              ? (mode === "duel" ? "Musik-Duell starten" : mode === "challenge" ? "Musik-Challenge starten" : "Songs anhören") +
+                (hard ? " (Hard)" : "")
               : mode === "duel"
                 ? "Duell starten"
                 : mode === "challenge"

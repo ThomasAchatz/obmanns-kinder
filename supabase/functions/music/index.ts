@@ -2,6 +2,8 @@
 // Aktionen:
 //   search  { term }     → Treffer mit 30-Sekunden-Vorschau (für „Song hinzufügen“)
 //   refresh { song_id }  → holt einen neuen Vorschau-Link, falls der alte nicht mehr spielt
+//   catalog { itunes_id } → legt die bekanntesten Songs dieses Interpreten im Katalog an
+//                           (Vorschlagsliste im Hard-Mode)
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { corsHeaders, json } from "../_shared/cors.ts";
 
@@ -11,6 +13,8 @@ const admin = createClient(url, serviceKey, { auth: { persistSession: false } })
 
 type ITunesTrack = {
   kind?: string;
+  wrapperType?: string;
+  artistId?: number;
   trackId: number;
   artistName: string;
   trackName: string;
@@ -28,6 +32,8 @@ async function itunes(path: string, params: Record<string, string>): Promise<ITu
     : `iTunes antwortet nicht (${res.status}).`);
   return (await res.json()).results ?? [];
 }
+
+const JUNK = /\b(live|remix|mix|karaoke|instrumental|acoustic|version|edit|demo|intro|interlude|medley|reprise|session|unplugged|mtv|commentary|skit)\b/i;
 
 const bigArtwork = (u?: string) => (u ? u.replace(/\/\d+x\d+bb\./, "/400x400bb.") : null);
 
@@ -90,6 +96,23 @@ Deno.serve(async (req) => {
         if (!track?.previewUrl) return json({ error: "Für diesen Song gibt es gerade keine Vorschau." }, 404);
         await admin.from("songs").update({ preview_url: track.previewUrl }).eq("id", songId);
         return json({ preview_url: track.previewUrl });
+      }
+
+      case "catalog": {
+        const trackId = Number(body.itunes_id);
+        const { data: song } = await admin.from("songs").select("id").eq("itunes_id", trackId).maybeSingle();
+        if (!song) return json({ error: "Song nicht im Pool." }, 404);
+        const track = (await itunes("lookup", { id: String(trackId), country: "DE" }))[0]
+          ?? (await itunes("lookup", { id: String(trackId), country: "US" }))[0];
+        if (!track?.artistId) return json({ added: 0 });
+        const songs = (await itunes("lookup", { id: String(track.artistId), entity: "song", limit: "50", country: "DE" }))
+          .filter((t) => t.wrapperType === "track" && t.kind === "song" && !JUNK.test(t.trackName));
+        const rows = songs.map((t) => ({ itunes_id: t.trackId, artist: t.artistName.slice(0, 160), title: t.trackName.slice(0, 200) }));
+        if (rows.length) {
+          const { error } = await admin.from("song_catalog").upsert(rows, { onConflict: "norm_artist,norm_title", ignoreDuplicates: true });
+          if (error) throw error;
+        }
+        return json({ added: rows.length });
       }
 
       default:

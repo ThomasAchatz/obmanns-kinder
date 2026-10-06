@@ -6,7 +6,7 @@ name: Song-Startpaket laden
 on:
   push:
     branches: [main]
-    paths: ["music/startpaket.json", "scripts/resolve-songs.mjs"]
+    paths: ["music/startpaket.json", "scripts/resolve-songs.mjs", "scripts/build-catalog.mjs"]
   workflow_dispatch:
 
 permissions:
@@ -19,7 +19,7 @@ concurrency:
 jobs:
   seed:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
@@ -35,11 +35,14 @@ jobs:
         id: resolve
         run: node scripts/resolve-songs.mjs
 
+      - name: Song-Katalog für den Hard-Mode bauen
+        run: node scripts/build-catalog.mjs
+
       - name: Ergebnis committen
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add music/resolved.json supabase/migrations
+          git add music/resolved.json music/catalog.json supabase/migrations
           if git diff --cached --quiet; then
             echo "Nichts Neues."
           else

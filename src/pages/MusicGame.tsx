@@ -5,9 +5,10 @@ import { useLoad } from "../lib/hooks";
 import { musicModeLabel, seconds } from "../lib/format";
 import { navigate } from "../lib/router";
 import { invoke, rpc } from "../lib/supabase";
-import type { CurrentSong, MusicGameDetails, SongResult } from "../lib/types";
+import type { CurrentSong, MusicGameDetails, SongPick, SongResult } from "../lib/types";
 import { Icon } from "../components/Icon";
 import { Record, type Groove } from "../components/Record";
+import { HardAnswer } from "../components/HardAnswer";
 import { ErrorBox, Loading, Page, toast } from "../components/ui";
 
 const LETTERS = ["A", "B", "C", "D"];
@@ -55,7 +56,7 @@ function MusicIntro({ game, onStart }: { game: MusicGameDetails; onStart: () => 
   const others = game.players.filter((p) => p.user_id !== profile!.id);
   const creator = game.players.find((p) => p.user_id === game.created_by);
   return (
-    <Page title={musicModeLabel[game.mode]} back={() => navigate("/")}>
+    <Page title={musicModeLabel[game.mode] + (game.hard ? " · Hard" : "")} back={() => navigate("/")}>
       <div className="intro">
         <Record size={170} label="Leere Platte" />
         {game.mode === "duel" && (
@@ -69,11 +70,20 @@ function MusicIntro({ game, onStart }: { game: MusicGameDetails; onStart: () => 
           <p className="lead">Musik-Challenge von {creator?.display_name} mit {game.players.length} Leuten. Alle hören dieselben Songs.</p>
         )}
         {game.mode === "solo" && <p className="lead">5 Songs quer durch alle Jahrzehnte zum Üben.</p>}
-        <ul className="rules">
-          <li>5 Songs, je 30 Sekunden Ausschnitt</li>
-          <li>Erst „Wer singt?“, dann „Welcher Titel?“, je ein Punkt</li>
-          <li>Ton an! Kopfhörer helfen.</li>
-        </ul>
+        {game.hard ? (
+          <ul className="rules">
+            <li>Hard-Mode: keine Antworten zur Auswahl</li>
+            <li>Tipp Titel oder Interpret, dann wähl den Song aus der Liste</li>
+            <li>45 Sekunden pro Song, je ein Punkt für Interpret und Titel</li>
+            <li>Ton an! Kopfhörer helfen.</li>
+          </ul>
+        ) : (
+          <ul className="rules">
+            <li>5 Songs, je 30 Sekunden Ausschnitt</li>
+            <li>Erst „Wer singt?“, dann „Welcher Titel?“, je ein Punkt</li>
+            <li>Ton an! Kopfhörer helfen.</li>
+          </ul>
+        )}
         <button className="btn btn-primary btn-block btn-big" onClick={onStart}>
           Los geht's
         </button>
@@ -91,6 +101,7 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
   const [remaining, setRemaining] = useState(30);
   const [sound, setSound] = useState<"loading" | "playing" | "paused" | "blocked">("loading");
   const [tally, setTally] = useState<Groove[]>([]);
+  const [pick, setPick] = useState<SongPick | null>(null);
   const endAt = useRef(0);
   const submitting = useRef(false);
   const refreshed = useRef(false);
@@ -101,7 +112,7 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
       return;
     }
     setSound("loading");
-    const ok = await playClip(s.preview_url, 30 - s.seconds_left);
+    const ok = await playClip(s.preview_url, (s.seconds ?? 30) - s.seconds_left);
     setSound(ok ? "playing" : "blocked");
   }, []);
 
@@ -111,6 +122,7 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
     setResult(null);
     setArtist(null);
     setTitle(null);
+    setPick(null);
     submitting.current = false;
     refreshed.current = false;
     stopClip();
@@ -143,7 +155,7 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
       refreshed.current = true;
       try {
         const r = await invoke<{ preview_url: string }>("music", { action: "refresh", song_id: song.song_ref });
-        const ok = await playClip(r.preview_url, Math.max(0, 30 - (endAt.current - Date.now()) / 1000));
+        const ok = await playClip(r.preview_url, Math.max(0, (song.seconds ?? 30) - (endAt.current - Date.now()) / 1000));
         setSound(ok ? "playing" : "blocked");
       } catch {
         setSound("blocked");
@@ -161,16 +173,23 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
   }, [song]);
 
   const submit = useCallback(
-    async (a: number | null, t: number | null) => {
+    async (a: number | null, t: number | null, guess?: SongPick | null) => {
       if (!song || submitting.current) return;
       submitting.current = true;
       try {
-        const r = await rpc<SongResult>("music_answer", {
-          p_game_id: game.id,
-          p_position: song.position,
-          p_artist: a !== null && a >= 0 ? a : null,
-          p_title: t,
-        });
+        const r = song.hard
+          ? await rpc<SongResult>("music_answer_hard", {
+              p_game_id: game.id,
+              p_position: song.position,
+              p_artist: guess?.artist ?? null,
+              p_title: guess?.title ?? null,
+            })
+          : await rpc<SongResult>("music_answer", {
+              p_game_id: game.id,
+              p_position: song.position,
+              p_artist: a !== null && a >= 0 ? a : null,
+              p_title: t,
+            });
         setResult(r);
         setTally((x) => {
           const n = [...x];
@@ -187,8 +206,8 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
   );
 
   // Countdown
-  const choice = useRef({ artist, title });
-  choice.current = { artist, title };
+  const choice = useRef({ artist, title, pick });
+  choice.current = { artist, title, pick };
   useEffect(() => {
     if (!song || result) return;
     const t = setInterval(() => {
@@ -196,7 +215,7 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
       setRemaining(left);
       if (left <= 0) {
         clearInterval(t);
-        submit(choice.current.artist, choice.current.title);
+        submit(choice.current.artist, choice.current.title, choice.current.pick);
       }
     }, 100);
     return () => clearInterval(t);
@@ -216,15 +235,16 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
 
   if (error)
     return (
-      <Page title={musicModeLabel[game.mode]} back={() => navigate("/")}>
+      <Page title={musicModeLabel[game.mode] + (game.hard ? " · Hard" : "")} back={() => navigate("/")}>
         <ErrorBox error={error} retry={load} />
       </Page>
     );
   if (!song) return <Loading text="Platte wird aufgelegt …" />;
 
-  const pct = Math.max(0, Math.min(100, (remaining / 30) * 100));
+  const total = song.seconds ?? 30;
+  const pct = Math.max(0, Math.min(100, (remaining / total) * 100));
   const urgent = remaining <= 8 && !result;
-  const stage: "artist" | "title" | "done" = result ? "done" : artist === null ? "artist" : "title";
+  const stage: "hard" | "artist" | "title" | "done" = result ? "done" : song.hard ? "hard" : artist === null ? "artist" : "title";
   const points = result ? Number(result.artist_ok) + Number(result.title_ok) : 0;
 
   return (
@@ -253,7 +273,7 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
         <div className={urgent ? "timer-fill urgent" : "timer-fill"} style={{ width: `${result ? 0 : pct}%` }} />
       </div>
 
-      <div className="turntable">
+      <div className={song.hard && !result ? "turntable is-compact" : "turntable"}>
         <button
           className="turntable-disc"
           onClick={toggleSound}
@@ -261,7 +281,7 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
           disabled={!song.preview_url}
         >
           <Record
-            size={result ? 132 : 176}
+            size={result ? 132 : song.hard ? 76 : 176}
             spinning={sound === "playing"}
             grooves={tally}
             current={result ? undefined : song.position}
@@ -286,6 +306,15 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
           </p>
         )}
       </div>
+
+      {stage === "hard" && (
+        <HardAnswer
+          pick={pick}
+          onPick={setPick}
+          onSubmit={() => submit(null, null, pick)}
+          onSkip={() => submit(null, null, null)}
+        />
+      )}
 
       {stage === "artist" && (
         <section aria-label="Wer singt?">
@@ -344,10 +373,12 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
             <li className={result.artist_ok ? "good" : "bad"}>
               {result.artist_ok ? "✓" : "✗"} Interpret
               {!result.artist_ok && artist !== null && artist >= 0 && <span className="muted"> · du: {song.artist_options[artist]}</span>}
+              {!result.artist_ok && song.hard && pick && <span className="muted"> · du: {pick.artist}</span>}
             </li>
             <li className={result.title_ok ? "good" : "bad"}>
               {result.title_ok ? "✓" : "✗"} Titel
               {!result.title_ok && title !== null && <span className="muted"> · du: {song.title_options[title]}</span>}
+              {!result.title_ok && song.hard && pick && <span className="muted"> · du: {pick.title}</span>}
             </li>
           </ul>
           <p className="muted small">+{points} {points === 1 ? "Punkt" : "Punkte"} · Der Song läuft weiter, bis du weitertippst.</p>
@@ -430,7 +461,7 @@ function MusicResult({ game, reload }: { game: MusicGameDetails; reload: () => v
   }
 
   return (
-    <Page title={musicModeLabel[game.mode]} back={() => navigate("/")}>
+    <Page title={musicModeLabel[game.mode] + (game.hard ? " · Hard" : "")} back={() => navigate("/")}>
       <h2 className="result-headline">{headline}</h2>
       {game.mode !== "solo" && game.status !== "open" && game.my_points && (
         <p className={game.my_points.counted ? "points-note" : "points-note is-off"}>
@@ -543,6 +574,11 @@ function MusicResult({ game, reload }: { game: MusicGameDetails; reload: () => v
                         })}
                       </p>
                     )}
+                    {game.hard && my && (my.guess_title || my.guess_artist) && !(my.artist_ok && my.title_ok) && (
+                      <p className="muted small">
+                        Dein Tipp: {my.guess_title} – {my.guess_artist}
+                      </p>
+                    )}
                     {s.added_by && <p className="muted small">Song von {s.added_by}</p>}
                   </div>
                 </li>
@@ -554,7 +590,7 @@ function MusicResult({ game, reload }: { game: MusicGameDetails; reload: () => v
       )}
 
       {game.mode !== "solo" && game.status !== "open" && (
-        <button className="btn btn-primary btn-block" onClick={() => navigate("/spielen?art=musik")}>
+        <button className="btn btn-primary btn-block" onClick={() => navigate(game.hard ? "/spielen?art=musik&hard=1" : "/spielen?art=musik")}>
           Neue Musikrunde
         </button>
       )}

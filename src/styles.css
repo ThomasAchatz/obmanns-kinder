@@ -1763,6 +1763,112 @@ button.song-cover {
   background: transparent;
   box-shadow: none !important;
 }
+.level-label {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.turntable.is-compact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 0 0 6px;
+}
+.turntable.is-compact .turntable-hint {
+  margin: 0;
+}
+.turntable.is-compact .turntable-btn {
+  width: 34px;
+  height: 34px;
+}
+.turntable.is-compact .turntable-btn svg {
+  width: 18px;
+  height: 18px;
+}
+.hard-input {
+  margin: 0 0 6px;
+}
+.hard-hint {
+  margin: 6px 2px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.hard-hits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  overflow: hidden;
+}
+.hard-hits li + li {
+  border-top: 1px solid var(--hair);
+}
+.hard-hits button {
+  display: grid;
+  gap: 1px;
+  width: 100%;
+  padding: 7px 12px;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.hard-hits button:active {
+  background: var(--hair);
+}
+.hard-hits strong {
+  font-size: 0.9375rem;
+}
+.hard-hits span {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.hard-hits .hard-hint {
+  padding: 4px 12px 8px;
+  margin: 0;
+}
+.hard-pick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--primary);
+  background: var(--surface);
+  color: var(--primary);
+}
+.hard-pick > span {
+  display: grid;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+}
+.hard-pick .link-btn {
+  font-size: 0.875rem;
+  padding: 0;
+}
+.level-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+.level-row .segmented {
+  flex: none;
+}
+.pill-hard {
+  background: var(--tinte);
+  color: #f1e3b8;
+  margin-left: 6px;
+  font-size: 0.6875rem;
+}
 .song-confirm {
   display: grid;
   gap: 10px;

@@ -116,6 +116,8 @@ export function SongAddPage() {
       return;
     }
     toast("Song ist im Pool. Deine Mitspieler bekommen ihn, du nie.");
+    // Weitere Songs des Interpreten für die Hard-Mode-Vorschläge (im Hintergrund)
+    invoke("music", { action: "catalog", itunes_id: chosen.itunes_id }).catch(() => {});
     setHits((x) => x?.map((h) => (h.itunes_id === chosen.itunes_id ? { ...h, known: true } : h)) ?? null);
     setChosen(null);
     mine.reload();
