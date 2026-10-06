@@ -1326,5 +1326,15 @@
   "itunes_id": 723780769,
   "preview_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/21/93/a8/2193a856-4626-9ee9-f171-fa4629095ac1/mzaf_17493633751326592408.plus.aac.p.m4a",
   "artwork_url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/8d/14/86/8d148687-6858-0199-0042-afc563ad8d03/00077778696650.jpg/400x400bb.jpg"
+ },
+ "EAV|Ba-Ba-Banküberfall": {
+  "itunes_id": 1442513727,
+  "preview_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5f/f6/69/5ff66975-e706-6f63-fbbd-4a7c60d3dc8d/mzaf_15719475816996698178.plus.aac.p.m4a",
+  "artwork_url": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/12/bb/b5/12bbb5c3-8b64-52c8-1703-1fe2df62744b/16UMGIM36138.rgb.jpg/400x400bb.jpg"
+ },
+ "Westernhagen|Freiheit": {
+  "itunes_id": 358340618,
+  "preview_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/5f/e7/c5/5fe7c5e9-5839-50b2-e665-70388409cfea/mzaf_2147096305538913314.plus.aac.p.m4a",
+  "artwork_url": "https://is1-ssl.mzstatic.com/image/thumb/Features6/v4/26/c4/82/26c48238-a4af-692a-c68f-00cab5c13c1e/dj.xkdmezoe.jpg/400x400bb.jpg"
  }
 }
