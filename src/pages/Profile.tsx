@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../lib/auth";
 import { useLoad } from "../lib/hooks";
 import { monthName } from "../lib/format";
-import { disablePush, enablePush, isIos, pushState, type PushState } from "../lib/push";
+import { disablePush, enablePush, isIos, isStandalone, pushState, type PushState } from "../lib/push";
 import { navigate } from "../lib/router";
 import { errorText, rpc, supabase } from "../lib/supabase";
 import type { LeaderRow } from "../lib/types";
@@ -11,6 +11,11 @@ import { ErrorBox, Loading, Page, toast } from "../components/ui";
 type CatStat = { category_id: number; name: string; icon: string; answered: number; correct: number; rate: number | null };
 type Leader = { category_id: number; name: string; icon: string; user_id: string | null; display_name: string | null; answered: number | null; rate: number | null };
 type Winner = { month: string; points: number; user_id: string; profiles: { display_name: string } | null };
+
+const APK_URL = "https://github.com/ThomasAchatz/obmanns-kinder/releases/latest/download/obmanns-kinder.apk";
+// In der Android-App (TWA) ist der Referrer android-app://…, dort braucht es den Link nicht.
+const showApkLink =
+  /android/i.test(navigator.userAgent) && !isStandalone() && !document.referrer.startsWith("android-app://");
 
 export function ProfilePage() {
   const { profile, signOut, reloadProfile } = useAuth();
@@ -183,6 +188,17 @@ export function ProfilePage() {
             </button>
           )}
         </div>
+        {showApkLink && (
+          <div className="setting">
+            <div>
+              <p className="strong">Android-App</p>
+              <p className="muted small">Als richtige App installieren, mit eigenem Eintrag in der App-Übersicht.</p>
+            </div>
+            <a className="btn btn-small" href={APK_URL}>
+              Herunterladen
+            </a>
+          </div>
+        )}
         <div className="field-inline">
           <label className="field">
             <span>Anzeigename</span>

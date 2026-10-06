@@ -82,11 +82,31 @@ Die App ist dann unter `https://thomasachatz.github.io/obmanns-kinder/` erreichb
 
 Freunde mit iPhone müssen die App erst über Safari → Teilen → **Zum Home-Bildschirm** hinzufügen und von dort öffnen, sonst gibt es keine Push-Nachrichten (ab iOS 16.4).
 
-## 8. Freunde anlegen und loslegen
+## 8. App aufs Handy bringen
+
+**Android:** die Android-App herunterladen:
+`https://github.com/ThomasAchatz/obmanns-kinder/releases/latest/download/obmanns-kinder.apk`
+(der Link steht auch in der App unter **Profil → Einstellungen**).
+
+1. Datei öffnen → Android fragt nach „Aus dieser Quelle installieren“ → erlauben.
+2. Samsung: Falls die Installation blockiert wird, **Einstellungen → Sicherheit und Datenschutz → Auto Blocker** kurz ausschalten, installieren, wieder einschalten.
+3. Die App braucht Chrome im Hintergrund (ist auf fast jedem Android vorhanden).
+
+**iPhone:** Link in **Safari** öffnen → Teilen-Symbol → **Zum Home-Bildschirm**. Danach immer über das Icon öffnen; nur dann gibt es Benachrichtigungen (ab iOS 16.4).
+
+## 9. Freunde anlegen und loslegen
 
 - **Profil → Admin-Bereich → Neuen Spieler anlegen**. Die App schlägt ein Passwort vor; Zugangsdaten danach per Messenger weitergeben.
 - Passwort vergessen? Im Admin-Bereich bei der Person auf **Passwort** tippen.
 - Bevor es richtig losgeht: Jeder schreibt ein paar Fragen. Für ein Duell braucht es mindestens 5 passende Fragen; unter **Fragen** siehst du, in welchen Kategorien noch welche fehlen.
+
+## Android-App bauen (einmalig)
+
+1. Repo **`thomasachatz.github.io`** anlegen (öffentlich). Dort liegt `.well-known/assetlinks.json`, damit Android der App die Webseite ohne Adressleiste anzeigt.
+2. Secret **`ANDROID_KEYSTORE_PASSWORD`** anlegen (mindestens 16 Zeichen). **Nicht verlieren und nicht ändern**, sonst lassen sich spätere Versionen nicht mehr als Update installieren.
+3. **Actions → Android-App bauen → Run workflow**. Der erste Lauf erzeugt den Signierschlüssel (`android/obmanns-kinder.keystore`, passwortgeschützt) und `android/assetlinks.json`.
+
+Die Android-App lädt die Inhalte live von der Webseite. Neue Funktionen kommen also ohne neue APK an; neu bauen muss man nur bei Änderungen an Name, Icon oder Farben.
 
 ## Gut zu wissen
 

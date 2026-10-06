@@ -1,0 +1,149 @@
+# Baut die Android-App (Trusted Web Activity) und stellt sie als Download bereit:
+# https://github.com/ThomasAchatz/obmanns-kinder/releases/latest/download/obmanns-kinder.apk
+#
+# Braucht das Secret ANDROID_KEYSTORE_PASSWORD. Beim ersten Lauf wird der
+# Signierschlüssel erzeugt und (passwortgeschützt) ins Repo gelegt, damit
+# spätere Versionen sich als Update installieren lassen.
+name: Android-App bauen
+
+on:
+  push:
+    branches: [main]
+    paths: ["android/twa-manifest.json", ".github/workflows/android.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      KS_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      KEYSTORE: android/obmanns-kinder.keystore
+      PACKAGE_ID: io.github.thomasachatz.obmannskinder
+    steps:
+      - name: Secret prüfen
+        id: check
+        run: |
+          if [ -z "$KS_PASSWORD" ]; then
+            echo "::warning::Secret ANDROID_KEYSTORE_PASSWORD fehlt (Settings → Secrets and variables → Actions)."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          elif [ ${#KS_PASSWORD} -lt 16 ]; then
+            echo "::error::ANDROID_KEYSTORE_PASSWORD ist zu kurz (mindestens 16 Zeichen)."
+            exit 1
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ready == 'true'
+
+      - uses: actions/setup-java@v4
+        if: steps.check.outputs.ready == 'true'
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.ready == 'true'
+        with:
+          node-version: 22
+
+      - name: Bubblewrap einrichten
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          npm install -g @bubblewrap/cli 2>&1 | tail -3
+          mkdir -p ~/.bubblewrap
+          echo "{\"jdkPath\":\"$JAVA_HOME\",\"androidSdkPath\":\"$ANDROID_HOME\"}" > ~/.bubblewrap/config.json
+          cat ~/.bubblewrap/config.json
+          ls "$ANDROID_HOME/build-tools" || true
+
+      - name: Signierschlüssel bereitstellen
+        if: steps.check.outputs.ready == 'true'
+        id: key
+        run: |
+          if [ ! -f "$KEYSTORE" ]; then
+            keytool -genkeypair -noprompt -keystore "$KEYSTORE" -storetype PKCS12 \
+              -alias obmanns -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "$KS_PASSWORD" -keypass "$KS_PASSWORD" \
+              -dname "CN=Obmanns Kinder, O=Obmanns Kinder, C=DE"
+            echo "created=true" >> "$GITHUB_OUTPUT"
+          fi
+          FP=$(keytool -list -v -keystore "$KEYSTORE" -alias obmanns -storepass "$KS_PASSWORD" | grep -m1 'SHA256:' | sed 's/.*SHA256: *//')
+          if [ -z "$FP" ]; then
+            echo "::error::Schlüssel konnte nicht gelesen werden. Stimmt ANDROID_KEYSTORE_PASSWORD noch mit dem beim ersten Lauf überein?"
+            exit 1
+          fi
+          echo "fp=$FP" >> "$GITHUB_OUTPUT"
+          cat > android/assetlinks.json <<EOF
+          [
+            {
+              "relation": ["delegate_permission/common.handle_all_urls"],
+              "target": {
+                "namespace": "android_app",
+                "package_name": "$PACKAGE_ID",
+                "sha256_cert_fingerprints": ["$FP"]
+              }
+            }
+          ]
+          EOF
+          {
+            echo "### Digital Asset Links"
+            echo "Gehört nach \`https://thomasachatz.github.io/.well-known/assetlinks.json\`:"
+            echo '```json'
+            cat android/assetlinks.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Android-Projekt erzeugen und bauen
+        if: steps.check.outputs.ready == 'true'
+        env:
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          FP: ${{ steps.key.outputs.fp }}
+          RUN: ${{ github.run_number }}
+        run: |
+          set -o pipefail
+          WORK="$RUNNER_TEMP/twa"
+          mkdir -p "$WORK"
+          cp "$KEYSTORE" "$WORK/obmanns-kinder.keystore"
+          jq --argjson code "$RUN" --arg name "1.0.$RUN" --arg fp "$FP" \
+            '.appVersionCode = $code | .appVersionName = $name | .appVersion = $name | .fingerprints = [{"name":"release","value":$fp}]' \
+            android/twa-manifest.json > "$WORK/twa-manifest.json"
+          cd "$WORK"
+          fail() {
+            echo "::error title=$1::$(tail -c 1500 "$2" | tr '\n' ' ' | sed 's/\x1b\[[0-9;]*m//g')"
+            exit 1
+          }
+          bubblewrap update --skipVersionUpgrade < /dev/null 2>&1 | tee update.log || fail "bubblewrap update" update.log
+          bubblewrap build --skipPwaValidation < /dev/null 2>&1 | tee build.log || fail "bubblewrap build" build.log
+          ls -la
+          cp app-release-signed.apk "$GITHUB_WORKSPACE/obmanns-kinder.apk"
+
+      - name: Schlüssel und Asset Links ins Repo
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$KEYSTORE" android/assetlinks.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Android: Signierschlüssel und Asset Links [skip ci]"
+            git push
+          fi
+
+      - name: Als Download veröffentlichen
+        if: steps.check.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN: ${{ github.run_number }}
+        run: |
+          gh release create "android-1.0.$RUN" obmanns-kinder.apk \
+            --title "Android-App 1.0.$RUN" \
+            --notes "Obmanns Kinder für Android. Installation: Datei auf dem Handy öffnen, „Aus dieser Quelle installieren“ erlauben, installieren. Bei Samsung ggf. Auto Blocker kurz ausschalten." \
+            --latest
+          echo "Download: https://github.com/${{ github.repository }}/releases/latest/download/obmanns-kinder.apk" >> "$GITHUB_STEP_SUMMARY"
