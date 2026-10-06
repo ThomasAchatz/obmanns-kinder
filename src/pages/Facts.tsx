@@ -16,7 +16,7 @@ export function FactsPage() {
   const facts = useLoad(async () => {
     const { data, error } = await supabase
       .from("facts")
-      .select("id, author_id, text, image_path, created_at, author:profiles(display_name), fact_likes(user_id)")
+      .select("id, author_id, text, image_path, created_at, author:profiles!facts_author_id_fkey(display_name), fact_likes(user_id)")
       .order("created_at", { ascending: false })
       .limit(limit);
     if (error) throw error;

@@ -105,7 +105,7 @@ export type GameDetails = {
 export type Question = {
   id: number;
   category_id: number;
-  author_id: string;
+  author_id: string | null;
   text: string;
   image_path: string | null;
   correct: string;

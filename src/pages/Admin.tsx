@@ -166,7 +166,7 @@ function Reports() {
   const reports = useLoad(async () => {
     const { data, error } = await supabase
       .from("question_reports")
-      .select("id, reason, comment, created_at, question:questions(id, text, correct, is_active), reporter:profiles(display_name)")
+      .select("id, reason, comment, created_at, question:questions!question_reports_question_id_fkey(id, text, correct, is_active), reporter:profiles!question_reports_user_id_fkey(display_name)")
       .eq("status", "offen")
       .order("created_at", { ascending: false });
     if (error) throw error;

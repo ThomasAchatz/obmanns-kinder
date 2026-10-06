@@ -14,7 +14,7 @@ export function HomePage() {
   const fact = useLoad(async () => {
     const { data } = await supabase
       .from("facts")
-      .select("id, author_id, text, image_path, created_at, author:profiles(display_name), fact_likes(user_id)")
+      .select("id, author_id, text, image_path, created_at, author:profiles!facts_author_id_fkey(display_name), fact_likes(user_id)")
       .order("created_at", { ascending: false })
       .limit(1);
     return ((data ?? [])[0] as unknown as Fact) ?? null;

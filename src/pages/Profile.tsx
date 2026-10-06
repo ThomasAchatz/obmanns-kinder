@@ -21,7 +21,7 @@ export function ProfilePage() {
   const winners = useLoad(async () => {
     const { data, error } = await supabase
       .from("monthly_results")
-      .select("month, points, user_id, profiles(display_name)")
+      .select("month, points, user_id, profiles!monthly_results_user_id_fkey(display_name)")
       .eq("rank", 1)
       .order("month", { ascending: false })
       .limit(12);
