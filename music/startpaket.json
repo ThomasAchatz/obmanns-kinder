@@ -1606,5 +1606,1505 @@
   "title": "Maria Magdalena",
   "genre": "Schlager",
   "decade": 1980
+ },
+ {
+  "artist": "The Kinks",
+  "title": "You Really Got Me",
+  "genre": "Oldies",
+  "decade": 1960
+ },
+ {
+  "artist": "The Animals",
+  "title": "The House of the Rising Sun",
+  "genre": "Oldies",
+  "decade": 1960
+ },
+ {
+  "artist": "Creedence Clearwater Revival",
+  "title": "Proud Mary",
+  "genre": "Rock",
+  "decade": 1960
+ },
+ {
+  "artist": "Ben E. King",
+  "title": "Stand by Me",
+  "genre": "Soul",
+  "decade": 1960
+ },
+ {
+  "artist": "The Temptations",
+  "title": "My Girl",
+  "genre": "Soul",
+  "decade": 1960
+ },
+ {
+  "artist": "Otis Redding",
+  "title": "(Sittin' On) The Dock of the Bay",
+  "genre": "Soul",
+  "decade": 1960
+ },
+ {
+  "artist": "Roy Orbison",
+  "title": "Oh, Pretty Woman",
+  "genre": "Oldies",
+  "decade": 1960
+ },
+ {
+  "artist": "Nancy Sinatra",
+  "title": "These Boots Are Made for Walkin'",
+  "genre": "Oldies",
+  "decade": 1960
+ },
+ {
+  "artist": "Steppenwolf",
+  "title": "Born to Be Wild",
+  "genre": "Rock",
+  "decade": 1960
+ },
+ {
+  "artist": "Roy Black",
+  "title": "Ganz in Weiß",
+  "genre": "Schlager",
+  "decade": 1960
+ },
+ {
+  "artist": "Drafi Deutscher",
+  "title": "Marmor, Stein und Eisen bricht",
+  "genre": "Schlager",
+  "decade": 1960
+ },
+ {
+  "artist": "James Brown",
+  "title": "I Got You (I Feel Good)",
+  "genre": "Soul",
+  "decade": 1960
+ },
+ {
+  "artist": "The Mamas & The Papas",
+  "title": "California Dreamin'",
+  "genre": "Oldies",
+  "decade": 1960
+ },
+ {
+  "artist": "Neil Diamond",
+  "title": "Sweet Caroline",
+  "genre": "Oldies",
+  "decade": 1960
+ },
+ {
+  "artist": "Michael Holm",
+  "title": "Mendocino",
+  "genre": "Schlager",
+  "decade": 1960
+ },
+ {
+  "artist": "Boney M.",
+  "title": "Rasputin",
+  "genre": "Disco",
+  "decade": 1970
+ },
+ {
+  "artist": "Bee Gees",
+  "title": "Night Fever",
+  "genre": "Disco",
+  "decade": 1970
+ },
+ {
+  "artist": "Donna Summer",
+  "title": "Hot Stuff",
+  "genre": "Disco",
+  "decade": 1970
+ },
+ {
+  "artist": "Chic",
+  "title": "Le Freak",
+  "genre": "Disco",
+  "decade": 1970
+ },
+ {
+  "artist": "Sister Sledge",
+  "title": "We Are Family",
+  "genre": "Disco",
+  "decade": 1970
+ },
+ {
+  "artist": "Baccara",
+  "title": "Yes Sir, I Can Boogie",
+  "genre": "Disco",
+  "decade": 1970
+ },
+ {
+  "artist": "KC & The Sunshine Band",
+  "title": "That's the Way (I Like It)",
+  "genre": "Disco",
+  "decade": 1970
+ },
+ {
+  "artist": "Dschinghis Khan",
+  "title": "Dschinghis Khan",
+  "genre": "Disco",
+  "decade": 1970
+ },
+ {
+  "artist": "The Jackson 5",
+  "title": "ABC",
+  "genre": "Soul",
+  "decade": 1970
+ },
+ {
+  "artist": "Lynyrd Skynyrd",
+  "title": "Sweet Home Alabama",
+  "genre": "Rock",
+  "decade": 1970
+ },
+ {
+  "artist": "The Rolling Stones",
+  "title": "Angie",
+  "genre": "Rock",
+  "decade": 1970
+ },
+ {
+  "artist": "Kiss",
+  "title": "I Was Made for Lovin' You",
+  "genre": "Rock",
+  "decade": 1970
+ },
+ {
+  "artist": "Smokie",
+  "title": "Living Next Door to Alice",
+  "genre": "Pop",
+  "decade": 1970
+ },
+ {
+  "artist": "Status Quo",
+  "title": "Rockin' All Over the World",
+  "genre": "Rock",
+  "decade": 1970
+ },
+ {
+  "artist": "Elton John",
+  "title": "Crocodile Rock",
+  "genre": "Pop",
+  "decade": 1970
+ },
+ {
+  "artist": "Rod Stewart",
+  "title": "Sailing",
+  "genre": "Rock",
+  "decade": 1970
+ },
+ {
+  "artist": "Barry White",
+  "title": "You're the First, the Last, My Everything",
+  "genre": "Soul",
+  "decade": 1970
+ },
+ {
+  "artist": "Bill Withers",
+  "title": "Ain't No Sunshine",
+  "genre": "Soul",
+  "decade": 1970
+ },
+ {
+  "artist": "Bob Marley & The Wailers",
+  "title": "Is This Love",
+  "genre": "Reggae",
+  "decade": 1970
+ },
+ {
+  "artist": "Peter Maffay",
+  "title": "Du",
+  "genre": "Schlager",
+  "decade": 1970
+ },
+ {
+  "artist": "Costa Cordalis",
+  "title": "Anita",
+  "genre": "Schlager",
+  "decade": 1970
+ },
+ {
+  "artist": "Jürgen Drews",
+  "title": "Ein Bett im Kornfeld",
+  "genre": "Schlager",
+  "decade": 1970
+ },
+ {
+  "artist": "Marianne Rosenberg",
+  "title": "Er gehört zu mir",
+  "genre": "Schlager",
+  "decade": 1970
+ },
+ {
+  "artist": "Rex Gildo",
+  "title": "Fiesta Mexicana",
+  "genre": "Schlager",
+  "decade": 1970
+ },
+ {
+  "artist": "Howard Carpendale",
+  "title": "Ti amo",
+  "genre": "Schlager",
+  "decade": 1970
+ },
+ {
+  "artist": "Juliane Werding",
+  "title": "Am Tag, als Conny Kramer starb",
+  "genre": "Schlager",
+  "decade": 1970
+ },
+ {
+  "artist": "Vicky Leandros",
+  "title": "Theo, wir fahr'n nach Lodz",
+  "genre": "Schlager",
+  "decade": 1970
+ },
+ {
+  "artist": "Christian Anders",
+  "title": "Es fährt ein Zug nach Nirgendwo",
+  "genre": "Schlager",
+  "decade": 1970
+ },
+ {
+  "artist": "Peter Alexander",
+  "title": "Die kleine Kneipe",
+  "genre": "Schlager",
+  "decade": 1970
+ },
+ {
+  "artist": "Wolfgang Ambros",
+  "title": "Schifoan",
+  "genre": "Austropop",
+  "decade": 1970
+ },
+ {
+  "artist": "Fleetwood Mac",
+  "title": "Go Your Own Way",
+  "genre": "Rock",
+  "decade": 1970
+ },
+ {
+  "artist": "Pink Floyd",
+  "title": "Another Brick in the Wall, Pt. 2",
+  "genre": "Rock",
+  "decade": 1970
+ },
+ {
+  "artist": "John Travolta & Olivia Newton-John",
+  "title": "You're the One That I Want",
+  "genre": "Pop",
+  "decade": 1970
+ },
+ {
+  "artist": "Bruce Springsteen",
+  "title": "Born to Run",
+  "genre": "Rock",
+  "decade": 1970
+ },
+ {
+  "artist": "John Denver",
+  "title": "Take Me Home, Country Roads",
+  "genre": "Pop",
+  "decade": 1970
+ },
+ {
+  "artist": "Dexys Midnight Runners",
+  "title": "Come On Eileen",
+  "genre": "Pop",
+  "decade": 1980
+ },
+ {
+  "artist": "Klaus Lage",
+  "title": "1000 und 1 Nacht (Zoom!)",
+  "genre": "Deutschrock",
+  "decade": 1980
+ },
+ {
+  "artist": "Bonnie Tyler",
+  "title": "Total Eclipse of the Heart",
+  "genre": "Pop",
+  "decade": 1980
+ },
+ {
+  "artist": "Van Halen",
+  "title": "Jump",
+  "genre": "Rock",
+  "decade": 1980
+ },
+ {
+  "artist": "Joan Jett & The Blackhearts",
+  "title": "I Love Rock 'N Roll",
+  "genre": "Rock",
+  "decade": 1980
+ },
+ {
+  "artist": "Ray Parker Jr.",
+  "title": "Ghostbusters",
+  "genre": "Pop",
+  "decade": 1980
+ },
+ {
+  "artist": "Tears for Fears",
+  "title": "Everybody Wants to Rule the World",
+  "genre": "Pop",
+  "decade": 1980
+ },
+ {
+  "artist": "Depeche Mode",
+  "title": "Just Can't Get Enough",
+  "genre": "Pop",
+  "decade": 1980
+ },
+ {
+  "artist": "The Police",
+  "title": "Every Breath You Take",
+  "genre": "Rock",
+  "decade": 1980
+ },
+ {
+  "artist": "Lionel Richie",
+  "title": "All Night Long (All Night)",
+  "genre": "Soul",
+  "decade": 1980
+ },
+ {
+  "artist": "Opus",
+  "title": "Live Is Life",
+  "genre": "Austropop",
+  "decade": 1980
+ },
+ {
+  "artist": "EAV",
+  "title": "Märchenprinz",
+  "genre": "Austropop",
+  "decade": 1980
+ },
+ {
+  "artist": "EAV",
+  "title": "Küss die Hand, schöne Frau",
+  "genre": "Austropop",
+  "decade": 1980
+ },
+ {
+  "artist": "Rainhard Fendrich",
+  "title": "I Am from Austria",
+  "genre": "Austropop",
+  "decade": 1980
+ },
+ {
+  "artist": "Peter Cornelius",
+  "title": "Du entschuldige i kenn di",
+  "genre": "Austropop",
+  "decade": 1980
+ },
+ {
+  "artist": "Spider Murphy Gang",
+  "title": "Schickeria",
+  "genre": "Neue Deutsche Welle",
+  "decade": 1980
+ },
+ {
+  "artist": "Markus",
+  "title": "Ich will Spaß",
+  "genre": "Neue Deutsche Welle",
+  "decade": 1980
+ },
+ {
+  "artist": "Extrabreit",
+  "title": "Hurra, hurra, die Schule brennt",
+  "genre": "Neue Deutsche Welle",
+  "decade": 1980
+ },
+ {
+  "artist": "Hubert Kah",
+  "title": "Sternenhimmel",
+  "genre": "Neue Deutsche Welle",
+  "decade": 1980
+ },
+ {
+  "artist": "Geier Sturzflug",
+  "title": "Bruttosozialprodukt",
+  "genre": "Neue Deutsche Welle",
+  "decade": 1980
+ },
+ {
+  "artist": "Ideal",
+  "title": "Blaue Augen",
+  "genre": "Neue Deutsche Welle",
+  "decade": 1980
+ },
+ {
+  "artist": "Nena",
+  "title": "Leuchtturm",
+  "genre": "Neue Deutsche Welle",
+  "decade": 1980
+ },
+ {
+  "artist": "Münchener Freiheit",
+  "title": "Tausendmal du",
+  "genre": "Neue Deutsche Welle",
+  "decade": 1980
+ },
+ {
+  "artist": "Grauzone",
+  "title": "Eisbär",
+  "genre": "Neue Deutsche Welle",
+  "decade": 1980
+ },
+ {
+  "artist": "BAP",
+  "title": "Verdamp lang her",
+  "genre": "Deutschrock",
+  "decade": 1980
+ },
+ {
+  "artist": "Rio Reiser",
+  "title": "König von Deutschland",
+  "genre": "Deutschrock",
+  "decade": 1980
+ },
+ {
+  "artist": "Westernhagen",
+  "title": "Sexy",
+  "genre": "Deutschrock",
+  "decade": 1980
+ },
+ {
+  "artist": "Peter Maffay",
+  "title": "Sonne in der Nacht",
+  "genre": "Deutschrock",
+  "decade": 1980
+ },
+ {
+  "artist": "Nicki",
+  "title": "Wenn i mit dir tanz",
+  "genre": "Schlager",
+  "decade": 1980
+ },
+ {
+  "artist": "Roland Kaiser",
+  "title": "Dich zu lieben",
+  "genre": "Schlager",
+  "decade": 1980
+ },
+ {
+  "artist": "Klaus & Klaus",
+  "title": "An der Nordseeküste",
+  "genre": "Schlager",
+  "decade": 1980
+ },
+ {
+  "artist": "Zillertaler Schürzenjäger",
+  "title": "Sierra Madre",
+  "genre": "Schlager",
+  "decade": 1980
+ },
+ {
+  "artist": "Wildecker Herzbuben",
+  "title": "Herzilein",
+  "genre": "Schlager",
+  "decade": 1980
+ },
+ {
+  "artist": "Bon Jovi",
+  "title": "You Give Love a Bad Name",
+  "genre": "Rock",
+  "decade": 1980
+ },
+ {
+  "artist": "Laid Back",
+  "title": "Sunshine Reggae",
+  "genre": "Reggae",
+  "decade": 1980
+ },
+ {
+  "artist": "UB40",
+  "title": "Red Red Wine",
+  "genre": "Reggae",
+  "decade": 1980
+ },
+ {
+  "artist": "Beastie Boys",
+  "title": "(You Gotta) Fight for Your Right (To Party!)",
+  "genre": "Hip-Hop",
+  "decade": 1980
+ },
+ {
+  "artist": "Bruce Springsteen",
+  "title": "Born in the U.S.A.",
+  "genre": "Rock",
+  "decade": 1980
+ },
+ {
+  "artist": "Phil Collins",
+  "title": "Another Day in Paradise",
+  "genre": "Pop",
+  "decade": 1980
+ },
+ {
+  "artist": "George Michael",
+  "title": "Careless Whisper",
+  "genre": "Pop",
+  "decade": 1980
+ },
+ {
+  "artist": "Roxette",
+  "title": "The Look",
+  "genre": "Pop",
+  "decade": 1980
+ },
+ {
+  "artist": "Modern Talking",
+  "title": "Brother Louie",
+  "genre": "Pop",
+  "decade": 1980
+ },
+ {
+  "artist": "Madonna",
+  "title": "La Isla Bonita",
+  "genre": "Pop",
+  "decade": 1980
+ },
+ {
+  "artist": "Stevie Wonder",
+  "title": "I Just Called to Say I Love You",
+  "genre": "Soul",
+  "decade": 1980
+ },
+ {
+  "artist": "The Weather Girls",
+  "title": "It's Raining Men",
+  "genre": "Disco",
+  "decade": 1980
+ },
+ {
+  "artist": "Culture Beat",
+  "title": "Mr. Vain",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "2 Unlimited",
+  "title": "No Limit",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Dr. Alban",
+  "title": "It's My Life",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "La Bouche",
+  "title": "Be My Lover",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Corona",
+  "title": "The Rhythm of the Night",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Captain Jack",
+  "title": "Captain Jack",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Real McCoy",
+  "title": "Another Night",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "DJ BoBo",
+  "title": "Somebody Dance with Me",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Snap!",
+  "title": "The Power",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Whigfield",
+  "title": "Saturday Night",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Rednex",
+  "title": "Cotton Eye Joe",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Los del Rio",
+  "title": "Macarena",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Vengaboys",
+  "title": "We Like to Party! (The Vengabus)",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Sash!",
+  "title": "Ecuador",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Alice Deejay",
+  "title": "Better Off Alone",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "ATB",
+  "title": "9 PM (Till I Come)",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Gala",
+  "title": "Freed from Desire",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Blümchen",
+  "title": "Herz an Herz",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Bellini",
+  "title": "Samba de Janeiro",
+  "genre": "Dance",
+  "decade": 1990
+ },
+ {
+  "artist": "Ace of Base",
+  "title": "All That She Wants",
+  "genre": "Pop",
+  "decade": 1990
+ },
+ {
+  "artist": "No Doubt",
+  "title": "Don't Speak",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "Natalie Imbruglia",
+  "title": "Torn",
+  "genre": "Pop",
+  "decade": 1990
+ },
+ {
+  "artist": "Ricky Martin",
+  "title": "Livin' la Vida Loca",
+  "genre": "Pop",
+  "decade": 1990
+ },
+ {
+  "artist": "Cher",
+  "title": "Believe",
+  "genre": "Pop",
+  "decade": 1990
+ },
+ {
+  "artist": "Take That",
+  "title": "Back for Good",
+  "genre": "Pop",
+  "decade": 1990
+ },
+ {
+  "artist": "Mariah Carey",
+  "title": "All I Want for Christmas Is You",
+  "genre": "Pop",
+  "decade": 1990
+ },
+ {
+  "artist": "Eros Ramazzotti",
+  "title": "Più bella cosa",
+  "genre": "Pop",
+  "decade": 1990
+ },
+ {
+  "artist": "The Kelly Family",
+  "title": "An Angel",
+  "genre": "Pop",
+  "decade": 1990
+ },
+ {
+  "artist": "Depeche Mode",
+  "title": "Enjoy the Silence",
+  "genre": "Pop",
+  "decade": 1990
+ },
+ {
+  "artist": "The Cranberries",
+  "title": "Zombie",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "R.E.M.",
+  "title": "Losing My Religion",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "Aerosmith",
+  "title": "I Don't Want to Miss a Thing",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "Bryan Adams",
+  "title": "(Everything I Do) I Do It for You",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "4 Non Blondes",
+  "title": "What's Up?",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "Green Day",
+  "title": "Basket Case",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "The Offspring",
+  "title": "Pretty Fly (For a White Guy)",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "Guns N' Roses",
+  "title": "November Rain",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "Bloodhound Gang",
+  "title": "The Bad Touch",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "Chumbawamba",
+  "title": "Tubthumping",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "Liquido",
+  "title": "Narcotic",
+  "genre": "Rock",
+  "decade": 1990
+ },
+ {
+  "artist": "TLC",
+  "title": "Waterfalls",
+  "genre": "Hip-Hop",
+  "decade": 1990
+ },
+ {
+  "artist": "Boyz II Men",
+  "title": "End of the Road",
+  "genre": "Soul",
+  "decade": 1990
+ },
+ {
+  "artist": "Toni Braxton",
+  "title": "Un-Break My Heart",
+  "genre": "Soul",
+  "decade": 1990
+ },
+ {
+  "artist": "Shaggy",
+  "title": "Boombastic",
+  "genre": "Reggae",
+  "decade": 1990
+ },
+ {
+  "artist": "Inner Circle",
+  "title": "Sweat (A La La La La Long)",
+  "genre": "Reggae",
+  "decade": 1990
+ },
+ {
+  "artist": "UB40",
+  "title": "(I Can't Help) Falling in Love with You",
+  "genre": "Reggae",
+  "decade": 1990
+ },
+ {
+  "artist": "Die Prinzen",
+  "title": "Alles nur geklaut",
+  "genre": "Deutschpop",
+  "decade": 1990
+ },
+ {
+  "artist": "Pur",
+  "title": "Abenteuerland",
+  "genre": "Deutschpop",
+  "decade": 1990
+ },
+ {
+  "artist": "Die Fantastischen Vier",
+  "title": "Sie ist weg",
+  "genre": "Deutschpop",
+  "decade": 1990
+ },
+ {
+  "artist": "Lucilectric",
+  "title": "Mädchen",
+  "genre": "Deutschpop",
+  "decade": 1990
+ },
+ {
+  "artist": "Echt",
+  "title": "Du trägst keine Liebe in dir",
+  "genre": "Deutschpop",
+  "decade": 1990
+ },
+ {
+  "artist": "Absolute Beginner",
+  "title": "Liebeslied",
+  "genre": "Deutschrap",
+  "decade": 1990
+ },
+ {
+  "artist": "Die Toten Hosen",
+  "title": "Zehn kleine Jägermeister",
+  "genre": "Deutschrock",
+  "decade": 1990
+ },
+ {
+  "artist": "Guildo Horn",
+  "title": "Guildo hat euch lieb!",
+  "genre": "Schlager",
+  "decade": 1990
+ },
+ {
+  "artist": "Hubert von Goisern",
+  "title": "Koa Hiatamadl",
+  "genre": "Austropop",
+  "decade": 1990
+ },
+ {
+  "artist": "Shaggy",
+  "title": "It Wasn't Me",
+  "genre": "Reggae",
+  "decade": 2000
+ },
+ {
+  "artist": "Sean Paul",
+  "title": "Get Busy",
+  "genre": "Reggae",
+  "decade": 2000
+ },
+ {
+  "artist": "Modjo",
+  "title": "Lady (Hear Me Tonight)",
+  "genre": "Dance",
+  "decade": 2000
+ },
+ {
+  "artist": "DJ BoBo",
+  "title": "Chihuahua",
+  "genre": "Dance",
+  "decade": 2000
+ },
+ {
+  "artist": "Scooter",
+  "title": "Maria (I Like It Loud)",
+  "genre": "Dance",
+  "decade": 2000
+ },
+ {
+  "artist": "Eric Prydz",
+  "title": "Call on Me",
+  "genre": "Dance",
+  "decade": 2000
+ },
+ {
+  "artist": "Bob Sinclar",
+  "title": "Love Generation",
+  "genre": "Dance",
+  "decade": 2000
+ },
+ {
+  "artist": "Crazy Frog",
+  "title": "Axel F",
+  "genre": "Dance",
+  "decade": 2000
+ },
+ {
+  "artist": "Global Deejays",
+  "title": "The Sound of San Francisco",
+  "genre": "Dance",
+  "decade": 2000
+ },
+ {
+  "artist": "Mickie Krause",
+  "title": "Schatzi schenk mir ein Foto",
+  "genre": "Schlager",
+  "decade": 2000
+ },
+ {
+  "artist": "Höhner",
+  "title": "Viva Colonia",
+  "genre": "Schlager",
+  "decade": 2000
+ },
+ {
+  "artist": "DJ Ötzi",
+  "title": "Hey Baby (Uhh, Ahh)",
+  "genre": "Schlager",
+  "decade": 2000
+ },
+ {
+  "artist": "Markus Becker",
+  "title": "Das rote Pferd",
+  "genre": "Schlager",
+  "decade": 2000
+ },
+ {
+  "artist": "Donikkl",
+  "title": "So a schöner Tag (Fliegerlied)",
+  "genre": "Schlager",
+  "decade": 2000
+ },
+ {
+  "artist": "P!nk",
+  "title": "Get the Party Started",
+  "genre": "Pop",
+  "decade": 2000
+ },
+ {
+  "artist": "Kelly Clarkson",
+  "title": "Since U Been Gone",
+  "genre": "Pop",
+  "decade": 2000
+ },
+ {
+  "artist": "Avril Lavigne",
+  "title": "Complicated",
+  "genre": "Pop",
+  "decade": 2000
+ },
+ {
+  "artist": "Shakira",
+  "title": "Whenever, Wherever",
+  "genre": "Pop",
+  "decade": 2000
+ },
+ {
+  "artist": "Justin Timberlake",
+  "title": "SexyBack",
+  "genre": "Pop",
+  "decade": 2000
+ },
+ {
+  "artist": "James Blunt",
+  "title": "You're Beautiful",
+  "genre": "Pop",
+  "decade": 2000
+ },
+ {
+  "artist": "Juanes",
+  "title": "La camisa negra",
+  "genre": "Pop",
+  "decade": 2000
+ },
+ {
+  "artist": "Katy Perry",
+  "title": "I Kissed a Girl",
+  "genre": "Pop",
+  "decade": 2000
+ },
+ {
+  "artist": "Lady Gaga",
+  "title": "Just Dance",
+  "genre": "Pop",
+  "decade": 2000
+ },
+ {
+  "artist": "Beyoncé",
+  "title": "Halo",
+  "genre": "Pop",
+  "decade": 2000
+ },
+ {
+  "artist": "Snow Patrol",
+  "title": "Chasing Cars",
+  "genre": "Rock",
+  "decade": 2000
+ },
+ {
+  "artist": "Green Day",
+  "title": "Boulevard of Broken Dreams",
+  "genre": "Rock",
+  "decade": 2000
+ },
+ {
+  "artist": "Udo Lindenberg",
+  "title": "Ich mach mein Ding",
+  "genre": "Deutschrock",
+  "decade": 2000
+ },
+ {
+  "artist": "Red Hot Chili Peppers",
+  "title": "Can't Stop",
+  "genre": "Rock",
+  "decade": 2000
+ },
+ {
+  "artist": "Mando Diao",
+  "title": "Dance with Somebody",
+  "genre": "Rock",
+  "decade": 2000
+ },
+ {
+  "artist": "Juli",
+  "title": "Geile Zeit",
+  "genre": "Deutschpop",
+  "decade": 2000
+ },
+ {
+  "artist": "Silbermond",
+  "title": "Irgendwas bleibt",
+  "genre": "Deutschpop",
+  "decade": 2000
+ },
+ {
+  "artist": "Rosenstolz",
+  "title": "Liebe ist alles",
+  "genre": "Deutschpop",
+  "decade": 2000
+ },
+ {
+  "artist": "Ich + Ich",
+  "title": "Vom selben Stern",
+  "genre": "Deutschpop",
+  "decade": 2000
+ },
+ {
+  "artist": "Seeed",
+  "title": "Dickes B",
+  "genre": "Deutschpop",
+  "decade": 2000
+ },
+ {
+  "artist": "Christina Stürmer",
+  "title": "Ich lebe",
+  "genre": "Austropop",
+  "decade": 2000
+ },
+ {
+  "artist": "Tokio Hotel",
+  "title": "Durch den Monsun",
+  "genre": "Deutschrock",
+  "decade": 2000
+ },
+ {
+  "artist": "Deichkind",
+  "title": "Remmidemmi (Yippie Yippie Yeah)",
+  "genre": "Deutschrap",
+  "decade": 2000
+ },
+ {
+  "artist": "50 Cent",
+  "title": "Candy Shop",
+  "genre": "Hip-Hop",
+  "decade": 2000
+ },
+ {
+  "artist": "Nelly",
+  "title": "Hot in Herre",
+  "genre": "Hip-Hop",
+  "decade": 2000
+ },
+ {
+  "artist": "Flo Rida",
+  "title": "Low",
+  "genre": "Hip-Hop",
+  "decade": 2000
+ },
+ {
+  "artist": "Eminem",
+  "title": "The Real Slim Shady",
+  "genre": "Hip-Hop",
+  "decade": 2000
+ },
+ {
+  "artist": "Black Eyed Peas",
+  "title": "Pump It",
+  "genre": "Hip-Hop",
+  "decade": 2000
+ },
+ {
+  "artist": "Destiny's Child",
+  "title": "Survivor",
+  "genre": "Hip-Hop",
+  "decade": 2000
+ },
+ {
+  "artist": "Alicia Keys",
+  "title": "Fallin'",
+  "genre": "Soul",
+  "decade": 2000
+ },
+ {
+  "artist": "Duffy",
+  "title": "Mercy",
+  "genre": "Soul",
+  "decade": 2000
+ },
+ {
+  "artist": "Andreas Gabalier",
+  "title": "Hulapalu",
+  "genre": "Schlager",
+  "decade": 2010
+ },
+ {
+  "artist": "voXXclub",
+  "title": "Rock mi",
+  "genre": "Schlager",
+  "decade": 2010
+ },
+ {
+  "artist": "Kerstin Ott",
+  "title": "Die immer lacht",
+  "genre": "Schlager",
+  "decade": 2010
+ },
+ {
+  "artist": "Beatrice Egli",
+  "title": "Mein Herz",
+  "genre": "Schlager",
+  "decade": 2010
+ },
+ {
+  "artist": "Josh.",
+  "title": "Cordula Grün",
+  "genre": "Austropop",
+  "decade": 2010
+ },
+ {
+  "artist": "Seiler und Speer",
+  "title": "Ham kummst",
+  "genre": "Austropop",
+  "decade": 2010
+ },
+ {
+  "artist": "Wanda",
+  "title": "Bologna",
+  "genre": "Austropop",
+  "decade": 2010
+ },
+ {
+  "artist": "Pizzera & Jaus",
+  "title": "Eine ins Leben",
+  "genre": "Austropop",
+  "decade": 2010
+ },
+ {
+  "artist": "Unheilig",
+  "title": "Geboren um zu leben",
+  "genre": "Deutschrock",
+  "decade": 2010
+ },
+ {
+  "artist": "Adel Tawil",
+  "title": "Lieder",
+  "genre": "Deutschpop",
+  "decade": 2010
+ },
+ {
+  "artist": "Philipp Poisel",
+  "title": "Wie soll ein Mensch das ertragen",
+  "genre": "Deutschpop",
+  "decade": 2010
+ },
+ {
+  "artist": "Joris",
+  "title": "Herz über Kopf",
+  "genre": "Deutschpop",
+  "decade": 2010
+ },
+ {
+  "artist": "Namika",
+  "title": "Lieblingsmensch",
+  "genre": "Deutschpop",
+  "decade": 2010
+ },
+ {
+  "artist": "Sarah Connor",
+  "title": "Wie schön du bist",
+  "genre": "Deutschpop",
+  "decade": 2010
+ },
+ {
+  "artist": "Milky Chance",
+  "title": "Stolen Dance",
+  "genre": "Pop",
+  "decade": 2010
+ },
+ {
+  "artist": "Bausa",
+  "title": "Was du Liebe nennst",
+  "genre": "Deutschrap",
+  "decade": 2010
+ },
+ {
+  "artist": "Alligatoah",
+  "title": "Willst du",
+  "genre": "Deutschrap",
+  "decade": 2010
+ },
+ {
+  "artist": "Marteria",
+  "title": "Kids (2 Finger an den Kopf)",
+  "genre": "Deutschrap",
+  "decade": 2010
+ },
+ {
+  "artist": "Deichkind",
+  "title": "Leider geil",
+  "genre": "Deutschrap",
+  "decade": 2010
+ },
+ {
+  "artist": "Lost Frequencies",
+  "title": "Are You with Me",
+  "genre": "Dance",
+  "decade": 2010
+ },
+ {
+  "artist": "Calvin Harris",
+  "title": "Summer",
+  "genre": "Dance",
+  "decade": 2010
+ },
+ {
+  "artist": "Major Lazer & DJ Snake",
+  "title": "Lean On",
+  "genre": "Dance",
+  "decade": 2010
+ },
+ {
+  "artist": "PSY",
+  "title": "Gangnam Style",
+  "genre": "Dance",
+  "decade": 2010
+ },
+ {
+  "artist": "LMFAO",
+  "title": "Party Rock Anthem",
+  "genre": "Dance",
+  "decade": 2010
+ },
+ {
+  "artist": "Pitbull",
+  "title": "Timber",
+  "genre": "Dance",
+  "decade": 2010
+ },
+ {
+  "artist": "Macklemore & Ryan Lewis",
+  "title": "Thrift Shop",
+  "genre": "Hip-Hop",
+  "decade": 2010
+ },
+ {
+  "artist": "Carly Rae Jepsen",
+  "title": "Call Me Maybe",
+  "genre": "Pop",
+  "decade": 2010
+ },
+ {
+  "artist": "Luis Fonsi",
+  "title": "Despacito",
+  "genre": "Pop",
+  "decade": 2010
+ },
+ {
+  "artist": "Sia",
+  "title": "Chandelier",
+  "genre": "Pop",
+  "decade": 2010
+ },
+ {
+  "artist": "Meghan Trainor",
+  "title": "All About That Bass",
+  "genre": "Pop",
+  "decade": 2010
+ },
+ {
+  "artist": "Mark Ronson",
+  "title": "Uptown Funk",
+  "genre": "Pop",
+  "decade": 2010
+ },
+ {
+  "artist": "Rihanna",
+  "title": "We Found Love",
+  "genre": "Pop",
+  "decade": 2010
+ },
+ {
+  "artist": "Maroon 5",
+  "title": "Moves Like Jagger",
+  "genre": "Pop",
+  "decade": 2010
+ },
+ {
+  "artist": "Passenger",
+  "title": "Let Her Go",
+  "genre": "Pop",
+  "decade": 2010
+ },
+ {
+  "artist": "Camila Cabello",
+  "title": "Havana",
+  "genre": "Pop",
+  "decade": 2010
+ },
+ {
+  "artist": "Hozier",
+  "title": "Take Me to Church",
+  "genre": "Rock",
+  "decade": 2010
+ },
+ {
+  "artist": "The Lumineers",
+  "title": "Ho Hey",
+  "genre": "Rock",
+  "decade": 2010
+ },
+ {
+  "artist": "Kraftklub",
+  "title": "Ich will nicht nach Berlin",
+  "genre": "Deutschrock",
+  "decade": 2010
+ },
+ {
+  "artist": "Rag'n'Bone Man",
+  "title": "Human",
+  "genre": "Soul",
+  "decade": 2010
+ },
+ {
+  "artist": "John Legend",
+  "title": "All of Me",
+  "genre": "Soul",
+  "decade": 2010
+ },
+ {
+  "artist": "DJ Robin & Schürze",
+  "title": "Layla",
+  "genre": "Schlager",
+  "decade": 2020
+ },
+ {
+  "artist": "Glass Animals",
+  "title": "Heat Waves",
+  "genre": "Pop",
+  "decade": 2020
+ },
+ {
+  "artist": "Olivia Rodrigo",
+  "title": "drivers license",
+  "genre": "Pop",
+  "decade": 2020
+ },
+ {
+  "artist": "Peter Fox",
+  "title": "Zukunft Pink",
+  "genre": "Deutschpop",
+  "decade": 2020
+ },
+ {
+  "artist": "Nina Chuba",
+  "title": "Wildberry Lillet",
+  "genre": "Deutschpop",
+  "decade": 2020
+ },
+ {
+  "artist": "Apache 207 & Udo Lindenberg",
+  "title": "Komet",
+  "genre": "Deutschrap",
+  "decade": 2020
+ },
+ {
+  "artist": "Nathan Evans",
+  "title": "Wellerman",
+  "genre": "Pop",
+  "decade": 2020
+ },
+ {
+  "artist": "Sabrina Carpenter",
+  "title": "Espresso",
+  "genre": "Pop",
+  "decade": 2020
+ },
+ {
+  "artist": "Benson Boone",
+  "title": "Beautiful Things",
+  "genre": "Pop",
+  "decade": 2020
+ },
+ {
+  "artist": "Teddy Swims",
+  "title": "Lose Control",
+  "genre": "Soul",
+  "decade": 2020
+ },
+ {
+  "artist": "The Weeknd",
+  "title": "Save Your Tears",
+  "genre": "Pop",
+  "decade": 2020
+ },
+ {
+  "artist": "Billie Eilish",
+  "title": "BIRDS OF A FEATHER",
+  "genre": "Pop",
+  "decade": 2020
+ },
+ {
+  "artist": "Tiësto",
+  "title": "The Business",
+  "genre": "Dance",
+  "decade": 2020
+ },
+ {
+  "artist": "Hozier",
+  "title": "Too Sweet",
+  "genre": "Rock",
+  "decade": 2020
+ },
+ {
+  "artist": "The Kid LAROI & Justin Bieber",
+  "title": "Stay",
+  "genre": "Pop",
+  "decade": 2020
  }
 ]
