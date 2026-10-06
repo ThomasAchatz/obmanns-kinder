@@ -23,14 +23,16 @@
     "path": "./obmanns-kinder.keystore",
     "alias": "obmanns"
   },
-  "appVersionName": "1.0.0",
+  "appVersionName": "1.0.1",
   "appVersion": "1.0.0",
   "appVersionCode": 1,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "fallbackType": "customtabs",
   "features": {},
-  "alphaDependencies": { "enabled": false },
+  "alphaDependencies": {
+    "enabled": false
+  },
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
