@@ -390,6 +390,7 @@ code {
   box-shadow: 0 0 0 1px var(--border);
 }
 .segmented-small .seg {
+  white-space: nowrap;
   min-height: 30px;
   padding: 0 12px;
   font-size: 0.8125rem;
@@ -1440,6 +1441,150 @@ form.cat-edit {
 .setup-steps input {
   font-size: 16px;
   font-family: ui-monospace, monospace;
+}
+
+/* ---------- Admin-Statistik ---------- */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 4px 0 10px;
+}
+.stat-row > div {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+}
+.stat-row dt {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.stat-row dd {
+  margin: 2px 0 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.stat-of {
+  font-size: 0.9375rem;
+  color: var(--faint);
+  font-weight: 400;
+}
+.stat-players,
+.stat-pairs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.stat-player {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.act-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--faint);
+}
+.act-dot.is-active {
+  background: var(--good);
+}
+.act-dot.is-rare {
+  background: var(--accent);
+}
+.act-dot.is-idle {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--faint);
+}
+.act-dot.is-never {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--bad);
+}
+.stat-main {
+  flex: 1;
+  min-width: 0;
+}
+.stat-main p {
+  margin: 0;
+}
+.stat-name {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+.stat-act {
+  margin-left: 8px;
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.stat-line {
+  font-size: 0.8125rem;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.stat-extra {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.stat-side {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+.stat-games {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.weeks {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.week {
+  width: 5px;
+  border-radius: 2px 2px 0 0;
+  background: var(--primary);
+}
+.week.is-zero {
+  height: 1px;
+  background: transparent;
+}
+.stat-sub {
+  font-size: 1rem;
+  margin: 18px 0 4px;
+}
+.stat-pairs li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--hair);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+.pair-games {
+  color: var(--muted);
+}
+.pair-score {
+  min-width: 92px;
+  text-align: right;
+  font-weight: 700;
+}
+.pair-score .muted {
+  font-weight: 400;
 }
 
 /* ---------- Musikrunde ---------- */

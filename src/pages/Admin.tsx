@@ -7,6 +7,7 @@ import { navigate } from "../lib/router";
 import { errorText, invoke, supabase } from "../lib/supabase";
 import type { Category } from "../lib/types";
 import { ErrorBox, Loading, Page, toast } from "../components/ui";
+import { AdminStats } from "../components/AdminStats";
 
 type AdminUser = { id: string; username: string; display_name: string; is_admin: boolean; blocked: boolean; last_sign_in_at: string | null };
 type Report = {
@@ -35,6 +36,7 @@ export function AdminPage() {
   }
   return (
     <Page title="Admin" back={() => navigate("/profil")}>
+      <AdminStats />
       <NewQuestions />
       <Users />
       <Reports />
