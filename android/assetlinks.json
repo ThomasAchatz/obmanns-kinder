@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.thomasachatz.obmannskinder",
+      "sha256_cert_fingerprints": ["04:98:AA:56:17:96:40:08:40:22:D3:17:4D:70:86:1E:57:7D:5D:4D:10:DF:D4:7F:09:0B:E5:37:CD:34:79:B0"]
+    }
+  }
+]
