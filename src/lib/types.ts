@@ -10,10 +10,12 @@ export type Category = { id: number; name: string; icon: string; sort_order: num
 export type CategoryRef = { name: string; icon: string };
 
 export type Mode = "solo" | "duel" | "challenge";
+export type Kind = "quiz" | "music";
 
 export type GameListItem = {
   id: number;
   mode: Mode;
+  kind: Kind;
   status: "open" | "finished" | "closed";
   created_at: string;
   finished_at: string | null;
@@ -147,4 +149,82 @@ export type LeaderRow = {
   wins: number;
   games: number;
   correct_rate: number;
+};
+
+// ---------------------------------------------------------------------
+// Musikrunde
+// ---------------------------------------------------------------------
+export type CurrentSong = {
+  done: false;
+  position: number;
+  total: number;
+  preview_url: string | null;
+  song_ref: number;
+  artist_options: string[];
+  title_options: string[];
+  seconds_left: number;
+};
+
+export type SongResult = {
+  position: number;
+  artist_correct: number;
+  title_correct: number;
+  artist_ok: boolean;
+  title_ok: boolean;
+  timed_out: boolean;
+  artist: string;
+  title: string;
+  artwork_url: string | null;
+  itunes_id: number | null;
+  finished: boolean;
+};
+
+export type MusicAnswer = {
+  artist_choice: number | null;
+  title_choice: number | null;
+  artist_ok: boolean | null;
+  title_ok: boolean | null;
+  ms: number | null;
+};
+
+export type MusicGameDetails = {
+  id: number;
+  mode: Mode;
+  status: "open" | "finished" | "closed";
+  created_by: string;
+  my_status: "pending" | "done";
+  can_play: boolean;
+  started: boolean;
+  can_nudge: boolean;
+  can_close: boolean;
+  my_points: GameDetails["my_points"];
+  players: GameDetails["players"];
+  songs: {
+    position: number;
+    artist: string;
+    title: string;
+    artwork_url: string | null;
+    itunes_id: number | null;
+    preview_url: string | null;
+    artist_options: string[];
+    artist_correct: number;
+    title_options: string[];
+    title_correct: number;
+    added_by: string | null;
+    answers: Record<string, MusicAnswer>;
+  }[];
+};
+
+export type SongCounts = { total: number; mine: number; by_genre: Record<string, number> };
+
+export type SongSearchHit = {
+  itunes_id: number;
+  artist: string;
+  title: string;
+  album: string | null;
+  artwork_url: string | null;
+  preview_url: string;
+  itunes_genre: string | null;
+  year: number | null;
+  known: boolean;
 };

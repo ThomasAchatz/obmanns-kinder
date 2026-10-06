@@ -5,7 +5,7 @@ import { monthName } from "../lib/format";
 import { disablePush, enablePush, isIos, isStandalone, pushState, type PushState } from "../lib/push";
 import { navigate } from "../lib/router";
 import { errorText, rpc, supabase } from "../lib/supabase";
-import type { DayStatus, LeaderRow } from "../lib/types";
+import type { DayStatus, Kind, LeaderRow } from "../lib/types";
 import { ErrorBox, Loading, Page, toast } from "../components/ui";
 
 type CatStat = { category_id: number; name: string; icon: string; answered: number; correct: number; rate: number | null };
@@ -20,8 +20,9 @@ const showApkLink =
 export function ProfilePage() {
   const { profile, signOut, reloadProfile } = useAuth();
   const [period, setPeriod] = useState<"month" | "all">("month");
-  const board = useLoad(() => rpc<LeaderRow[]>("leaderboard", { p_period: period }), [period]);
-  const day = useLoad(() => rpc<DayStatus>("my_day_status"));
+  const [kind, setKind] = useState<Kind>("quiz");
+  const board = useLoad(() => rpc<LeaderRow[]>("leaderboard", { p_period: period, p_kind: kind }), [period, kind]);
+  const day = useLoad(() => rpc<DayStatus>("my_day_status", { p_kind: kind }), [kind]);
   const stats = useLoad(() => rpc<CatStat[]>("category_stats"));
   const leaders = useLoad(() => rpc<Leader[]>("category_leaders"));
   const winners = useLoad(async () => {
@@ -85,8 +86,15 @@ export function ProfilePage() {
   return (
     <Page title={profile!.display_name}>
       <section className="section">
+        <div className="segmented board-switch" role="tablist" aria-label="Rangliste">
+          {(["quiz", "music"] as Kind[]).map((k) => (
+            <button key={k} role="tab" aria-selected={kind === k} className={kind === k ? "seg active" : "seg"} onClick={() => setKind(k)}>
+              {k === "quiz" ? "Quiz" : "Musik"}
+            </button>
+          ))}
+        </div>
         <div className="section-head">
-          <h2>Rangliste</h2>
+          <h2>Rangliste {kind === "music" ? "Musik" : "Quiz"}</h2>
           <div className="segmented segmented-small" role="tablist">
             <button role="tab" aria-selected={period === "month"} className={period === "month" ? "seg active" : "seg"} onClick={() => setPeriod("month")}>
               {monthName(new Date()).split(" ")[0]}
@@ -100,7 +108,7 @@ export function ProfilePage() {
         {board.loading && !board.data ? (
           <Loading />
         ) : rows.length === 0 ? (
-          <p className="muted">In diesem Monat wurde noch kein Duell beendet.</p>
+          <p className="muted">In diesem Monat wurde noch kein {kind === "music" ? "Musik-Duell" : "Duell"} beendet.</p>
         ) : (
           <table className="board">
             <thead>
@@ -133,6 +141,7 @@ export function ProfilePage() {
           </p>
         )}
         <p className="muted small">
+          {kind === "music" && "Musik hat eine eigene Rangliste und ein eigenes Tageslimit. Pro Song gibt es bis zu 2 Treffer (Interpret und Titel). "}
           Duell: Sieg 3, Unentschieden 1 Punkt. Challenge: Platz 1–3 bekommt 3/2/1 Punkte. Pro Tag zählen nur die ersten 3 beendeten
           Spiele, also höchstens 9 Punkte. Weiterspielen geht immer.
         </p>

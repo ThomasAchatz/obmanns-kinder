@@ -3,8 +3,15 @@ import { useAuth } from "../lib/auth";
 import { useCategories, useLoad, usePlayers } from "../lib/hooks";
 import { navigate } from "../lib/router";
 import { rpc } from "../lib/supabase";
-import type { DayStatus, Mode } from "../lib/types";
+import type { DayStatus, Kind, Mode, SongCounts } from "../lib/types";
+import { Icon } from "../components/Icon";
 import { ErrorBox, Loading, Page } from "../components/ui";
+
+const musicText: Record<Mode, string> = {
+  duel: "Ein Freund, dieselben 5 Songs. Erst den Interpreten erraten, dann den Titel. Du hörst zuerst.",
+  challenge: "Mehrere hören dieselben 5 Songs, die meisten Punkte gewinnen.",
+  solo: "5 Songs quer durch alle Jahrzehnte zum Üben. Zählt nicht für die Rangliste.",
+};
 
 const modes: { id: Mode; title: string; text: string }[] = [
   { id: "duel", title: "Duell", text: "Ein Freund, dieselben 5 Fragen aus 5 Kategorien. Du spielst zuerst." },
@@ -16,7 +23,9 @@ export function PlayPage() {
   const { profile } = useAuth();
   const players = usePlayers();
   const categories = useCategories();
-  const day = useLoad(() => rpc<DayStatus>("my_day_status"));
+  const [kind, setKind] = useState<Kind>(() => (window.location.hash.includes("art=musik") ? "music" : "quiz"));
+  const day = useLoad(() => rpc<DayStatus>("my_day_status", { p_kind: kind }), [kind]);
+  const songs = useLoad(() => rpc<SongCounts>("song_counts"));
   const [mode, setMode] = useState<Mode>("duel");
   const [picked, setPicked] = useState<string[]>([]);
   const [category, setCategory] = useState<number | null>(null);
@@ -30,12 +39,17 @@ export function PlayPage() {
     else setPicked((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]));
   }
 
-  const ready = mode === "solo" ? category != null : mode === "duel" ? picked.length === 1 : picked.length >= 1;
+  const ready = mode === "solo" ? kind === "music" || category != null : mode === "duel" ? picked.length === 1 : picked.length >= 1;
 
   async function start() {
     setBusy(true);
     setError(null);
     try {
+      if (kind === "music") {
+        const id = await rpc<number>("create_music_game", { p_mode: mode, p_invitees: mode === "solo" ? [] : picked });
+        navigate(`/musik/${id}`);
+        return;
+      }
       const id = await rpc<number>("create_game", {
         p_mode: mode,
         p_category_id: mode === "solo" ? category : null,
@@ -50,6 +64,26 @@ export function PlayPage() {
 
   return (
     <Page title="Spielen">
+      <div className="kind-switch" role="tablist" aria-label="Spielart">
+        {(["quiz", "music"] as Kind[]).map((k) => (
+          <button
+            key={k}
+            role="tab"
+            aria-selected={kind === k}
+            className={kind === k ? "kind active" : "kind"}
+            onClick={() => {
+              setKind(k);
+              setError(null);
+            }}
+          >
+            <Icon name={k === "quiz" ? "play" : "music"} size={20} />
+            <span className="kind-name">{k === "quiz" ? "Quiz" : "Musik"}</span>
+            <span className="kind-sub">
+              {k === "quiz" ? "Wissensfragen" : songs.data ? `${songs.data.total} Songs im Pool` : "Interpret und Titel"}
+            </span>
+          </button>
+        ))}
+      </div>
       <div className="segmented" role="tablist" aria-label="Spielmodus">
         {modes.map((m) => (
           <button
@@ -67,14 +101,14 @@ export function PlayPage() {
           </button>
         ))}
       </div>
-      <p className="lead">{modes.find((m) => m.id === mode)!.text}</p>
+      <p className="lead">{kind === "music" ? musicText[mode] : modes.find((m) => m.id === mode)!.text}</p>
       {mode !== "solo" && day.data && day.data.counted_games >= day.data.limit_games && (
         <div className="notice">
-          Du hast heute schon {day.data.limit_games} Wertungsspiele. Weitere Spiele machen Spaß, bringen aber bis morgen keine Punkte.
+          Du hast heute schon {day.data.limit_games} {kind === "music" ? "Musik-Wertungsspiele" : "Wertungsspiele"}. Weitere Spiele machen Spaß, bringen aber bis morgen keine Punkte.
         </div>
       )}
 
-      {mode === "solo" ? (
+      {mode === "solo" && kind === "music" ? null : mode === "solo" ? (
         <section className="section">
           <h2>Kategorie</h2>
           {categories.loading ? (
@@ -134,7 +168,21 @@ export function PlayPage() {
       <ErrorBox error={error} />
       <div className="sticky-action">
         <button className="btn btn-primary btn-block" disabled={!ready || busy} onClick={start}>
-          {busy ? "Fragen werden gezogen …" : mode === "duel" ? "Duell starten" : mode === "challenge" ? "Challenge starten" : "Quiz starten"}
+          {busy
+            ? kind === "music"
+              ? "Songs werden gemischt …"
+              : "Fragen werden gezogen …"
+            : kind === "music"
+              ? mode === "duel"
+                ? "Musik-Duell starten"
+                : mode === "challenge"
+                  ? "Musik-Challenge starten"
+                  : "Songs anhören"
+              : mode === "duel"
+                ? "Duell starten"
+                : mode === "challenge"
+                  ? "Challenge starten"
+                  : "Quiz starten"}
         </button>
       </div>
     </Page>

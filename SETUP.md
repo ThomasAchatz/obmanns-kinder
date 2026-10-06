@@ -58,7 +58,7 @@ Im Repo auf **Actions**:
 
 Die App ist dann unter `https://thomasachatz.github.io/obmanns-kinder/` erreichbar.
 
-> Falls „Supabase aktualisieren“ scheitert: Im Supabase **SQL Editor** den Inhalt von `supabase/migrations/20261005000000_init.sql` einfügen und ausführen. Die Edge Functions kannst du dann im Dashboard unter **Edge Functions → Deploy a new function → Via Editor** anlegen (`admin-users` und `push`, Code aus `supabase/functions/`). Bei `push` die JWT-Prüfung ausschalten.
+> Falls „Supabase aktualisieren“ scheitert: Im Supabase **SQL Editor** den Inhalt von `supabase/migrations/20261005000000_init.sql` einfügen und ausführen. Die Edge Functions kannst du dann im Dashboard unter **Edge Functions → Deploy a new function → Via Editor** anlegen (`admin-users`, `push` und `music`, Code aus `supabase/functions/`). Bei `push` die JWT-Prüfung ausschalten.
 
 ## 6. Dich selbst als Obmann anlegen
 
@@ -107,6 +107,12 @@ Freunde mit iPhone müssen die App erst über Safari → Teilen → **Zum Home-B
 3. **Actions → Android-App bauen → Run workflow**. Der erste Lauf erzeugt den Signierschlüssel (`android/obmanns-kinder.keystore`, passwortgeschützt) und `android/assetlinks.json`.
 
 Die Android-App lädt die Inhalte live von der Webseite. Neue Funktionen kommen also ohne neue APK an; neu bauen muss man nur bei Änderungen an Name, Icon oder Farben.
+
+## Musikrunde
+
+- Die Songs fürs Startpaket stehen in `music/startpaket.json` (Interpret, Titel, Genre, Jahrzehnt). Ändert sich die Datei, sucht der Ablauf „**Song-Startpaket laden**“ jeden Song bei iTunes, speichert Vorschau-Link und Cover und spielt sie in Supabase ein. Das dauert rund 15 Minuten, weil iTunes nur etwa 20 Anfragen pro Minute erlaubt.
+- Was iTunes nicht findet, steht im Lauf unter *Summary*. Einfach Schreibweise in der JSON-Datei korrigieren und neu committen.
+- Die Edge Function `music` sucht für „Song hinzufügen“ bei iTunes und holt frische Vorschau-Links, falls einer nicht mehr spielt. Sie wird mit „Supabase aktualisieren“ automatisch hochgeladen.
 
 ## Gut zu wissen
 

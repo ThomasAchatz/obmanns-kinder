@@ -8,6 +8,10 @@ on:
     paths: ["supabase/**"]
   workflow_dispatch:
 
+concurrency:
+  group: supabase
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

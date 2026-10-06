@@ -8,3 +8,7 @@ verify_jwt = true
 # öffentlichen Schlüssel – daher ohne JWT-Prüfung am Gateway.
 [functions.push]
 verify_jwt = false
+
+# Songsuche (iTunes) und frische Vorschau-Links – nur für angemeldete Spieler.
+[functions.music]
+verify_jwt = true

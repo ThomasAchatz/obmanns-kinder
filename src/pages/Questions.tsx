@@ -2,7 +2,8 @@ import { useAuth } from "../lib/auth";
 import { useCategories, useLoad } from "../lib/hooks";
 import { navigate } from "../lib/router";
 import { rpc, supabase } from "../lib/supabase";
-import type { Question, QuestionStats } from "../lib/types";
+import type { Question, QuestionStats, SongCounts } from "../lib/types";
+import { Icon } from "../components/Icon";
 import { Empty, ErrorBox, Loading, Page } from "../components/ui";
 
 type Count = { category_id: number; name: string; icon: string; total: number; mine: number };
@@ -11,6 +12,7 @@ export function QuestionsPage() {
   const { profile } = useAuth();
   const categories = useCategories();
   const counts = useLoad(() => rpc<Count[]>("question_counts"));
+  const songs = useLoad(() => rpc<SongCounts>("song_counts"));
   const mine = useLoad(async () => {
     const [{ data, error }, stats] = await Promise.all([
       supabase
@@ -65,6 +67,22 @@ export function QuestionsPage() {
           ))}
         </ul>
         {thin.length > 0 && <p className="muted small">Kategorien mit weniger als 10 Fragen sind markiert. Dort freuen sich alle über Nachschub.</p>}
+      </section>
+
+      <section className="section">
+        <div className="section-head">
+          <h2>Songs für die Musikrunde</h2>
+          {songs.data && <span className="muted small">{songs.data.total} Songs</span>}
+        </div>
+        <button className="song-teaser" onClick={() => navigate("/songs/neu")}>
+          <Icon name="music" />
+          <span>
+            <strong>Song hinzufügen</strong>
+            <span className="muted small">
+              {songs.data?.mine ? `${songs.data.mine} von dir im Pool` : "Such ihn bei Apple Music, der Ausschnitt kommt von selbst."}
+            </span>
+          </span>
+        </button>
       </section>
 
       <section className="section">

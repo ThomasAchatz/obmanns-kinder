@@ -1,13 +1,19 @@
 import { useState, type MouseEvent } from "react";
 import { useAuth } from "../lib/auth";
-import { modeLabel, timeAgo } from "../lib/format";
+import { modeLabel, musicModeLabel, timeAgo } from "../lib/format";
 import { navigate } from "../lib/router";
 import { rpc } from "../lib/supabase";
 import type { GameListItem } from "../lib/types";
+import { Icon } from "./Icon";
 import { toast } from "./ui";
 
 function title(g: GameListItem, me: string) {
   const others = g.players.filter((p) => p.user_id !== me);
+  if (g.kind === "music") {
+    if (g.mode === "solo") return "Musik solo";
+    if (g.mode === "duel") return `Musik-Duell mit ${others[0]?.display_name ?? "?"}`;
+    return `Musik-Challenge mit ${others.length} ${others.length === 1 ? "Person" : "Leuten"}`;
+  }
   if (g.mode === "solo") return `${g.category?.icon ?? ""} ${g.category?.name ?? "Solo-Quiz"}`;
   if (g.mode === "duel") return `Duell mit ${others[0]?.display_name ?? "?"}`;
   return `Challenge mit ${others.length} ${others.length === 1 ? "Person" : "Leuten"}`;
@@ -23,14 +29,21 @@ function statusLine(g: GameListItem, me: string) {
     }
     if (g.mode === "challenge") {
       const done = g.players.filter((p) => p.status === "done").length;
-      return g.status === "open" ? `${done} von ${g.players.length} haben gespielt` : `Beendet · ${mine?.score ?? 0} von 5 richtig`;
+      return g.status === "open"
+        ? `${done} von ${g.players.length} haben gespielt`
+        : `Beendet · ${mine?.score ?? 0} von ${g.kind === "music" ? "10 Punkten" : "5 richtig"}`;
     }
     if (g.status === "open") {
       const pending = others.filter((p) => p.status === "pending").map((p) => p.display_name);
       return `Wartet auf ${pending.join(", ")}`;
     }
   }
-  if (g.my_turn) return g.mode === "duel" && g.created_by !== me ? "Du wurdest herausgefordert" : "Deine 5 Fragen warten";
+  if (g.my_turn)
+    return g.mode === "duel" && g.created_by !== me
+      ? "Du wurdest herausgefordert"
+      : g.kind === "music"
+        ? "Deine 5 Songs warten"
+        : "Deine 5 Fragen warten";
   return `Wartet auf ${g.players.find((p) => p.user_id === g.created_by)?.display_name ?? "den Start"}`;
 }
 
@@ -61,16 +74,21 @@ export function GameCard({ game, onChanged }: { game: GameListItem; onChanged?: 
     }
   }
 
+  const href = game.kind === "music" ? `/musik/${game.id}` : `/spiel/${game.id}`;
+
   return (
     <article
-      className={`game-card${game.my_turn ? " is-turn" : ""}`}
-      onClick={() => navigate(`/spiel/${game.id}`)}
+      className={`game-card${game.my_turn ? " is-turn" : ""}${game.kind === "music" ? " is-music" : ""}`}
+      onClick={() => navigate(href)}
       role="link"
       tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && navigate(`/spiel/${game.id}`)}
+      onKeyDown={(e) => e.key === "Enter" && navigate(href)}
     >
       <div className="game-card-main">
-        <p className="game-card-mode">{modeLabel[game.mode]}</p>
+        <p className="game-card-mode">
+          {game.kind === "music" && <Icon name="music" size={13} />}
+          {game.kind === "music" ? musicModeLabel[game.mode] : modeLabel[game.mode]}
+        </p>
         <h3>{title(game, me)}</h3>
         <p className="game-card-status">
           {outcome === "win" && <strong className="good">Gewonnen · </strong>}

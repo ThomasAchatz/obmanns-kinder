@@ -8,6 +8,8 @@ import { LoginPage } from "./pages/Login";
 import { HomePage } from "./pages/Home";
 import { PlayPage } from "./pages/Play";
 import { GamePage } from "./pages/Game";
+import { MusicGamePage } from "./pages/MusicGame";
+import { SongAddPage } from "./pages/SongAdd";
 import { QuestionsPage } from "./pages/Questions";
 import { QuestionFormPage } from "./pages/QuestionForm";
 import { FactsPage } from "./pages/Facts";
@@ -23,8 +25,8 @@ const tabs: { path: string; label: string; icon: IconName }[] = [
 ];
 
 function activeTab(route: string) {
-  if (route.startsWith("/spiel")) return "/spielen";
-  if (route.startsWith("/fragen")) return "/fragen";
+  if (route.startsWith("/spiel") || route.startsWith("/musik")) return "/spielen";
+  if (route.startsWith("/fragen") || route.startsWith("/songs")) return "/fragen";
   if (route.startsWith("/admin")) return "/profil";
   return tabs.find((t) => t.path !== "/" && route.startsWith(t.path))?.path ?? "/";
 }
@@ -32,6 +34,8 @@ function activeTab(route: string) {
 function Routes({ route }: { route: string }) {
   let p: Record<string, string> | null;
   if ((p = match("/spiel/:id", route))) return <GamePage id={Number(p.id)} key={p.id} />;
+  if ((p = match("/musik/:id", route))) return <MusicGamePage id={Number(p.id)} key={p.id} />;
+  if (match("/songs/neu", route)) return <SongAddPage />;
   if (match("/spielen", route)) return <PlayPage />;
   if (match("/fragen", route)) return <QuestionsPage />;
   if (match("/fragen/neu", route)) return <QuestionFormPage />;
@@ -95,7 +99,7 @@ export function App() {
   if (!session) return <LoginPage />;
   if (!profile) return <Loading text="Profil wird geladen …" />;
 
-  const inGame = route.startsWith("/spiel/");
+  const inGame = route.startsWith("/spiel/") || route.startsWith("/musik/");
   const current = activeTab(route);
 
   return (

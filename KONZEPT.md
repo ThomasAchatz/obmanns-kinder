@@ -27,6 +27,15 @@ Pro Spieler und Tag zählen nur die ersten 3 beendeten Duelle oder Challenges f�
 - Bevorzugt kommen Fragen, die noch keiner der Mitspieler gesehen hat; schlecht bewertete (Saldo ≤ −3) kommen zuletzt.
 - Wer die App während einer Frage schließt und erst nach 30 Sekunden zurückkommt, hat die Frage verloren.
 
+## Musikrunde
+
+- 5 Songs pro Runde, je 30 Sekunden Ausschnitt (Vorschau von Apple Music über die kostenlose iTunes-Suche, Spotify bietet für neue Apps keine Vorschauen mehr).
+- Zweistufig: erst „Wer singt?“ (4 Interpreten), dann „Welcher Titel?“ (4 Titel). Je ein Punkt, also höchstens 10 pro Runde. Mehr Punkte gewinnt, bei Gleichstand die kürzere Zeit.
+- Falsche Interpreten kommen aus demselben Genre bzw. Jahrzehnt, falsche Titel bevorzugt vom selben Interpreten.
+- Duell, Gruppen-Challenge und Solo wie beim Quiz. Eigene Rangliste und eigenes Tageslimit (3 Wertungsspiele pro Tag).
+- Startpaket: rund 270 Songs quer durch Pop, Rock, Deutschpop, NDW, Austropop, Schlager, Hip-Hop und Oldies (music/startpaket.json). Jeder kann Songs über die Suche ergänzen, eigene Songs bekommt man nie.
+- Ergebnis als Schallplatte: jede Rille ein Song, oben leuchtet der Interpret, unten der Titel.
+
 ## Fragen
 
 - Format: Frage + 1 richtige + 3 falsche Antworten, Kategorie per Dropdown (10 feste Kategorien, Admin kann ergänzen), optional Bild, Erklärung und Quelle.

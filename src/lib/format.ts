@@ -19,3 +19,11 @@ export function monthName(date: string | Date): string {
 }
 
 export const modeLabel = { solo: "Solo-Quiz", duel: "Duell", challenge: "Gruppen-Challenge" } as const;
+
+export const musicModeLabel = { solo: "Musik solo", duel: "Musik-Duell", challenge: "Musik-Challenge" } as const;
+
+/** Genres der Musikrunde (wie im Startpaket) */
+export const GENRES = [
+  "Pop", "Rock", "Deutschpop", "Deutschrock", "Hip-Hop", "Deutschrap", "Dance", "Disco",
+  "Oldies", "Schlager", "Neue Deutsche Welle", "Austropop", "Soul", "Reggae",
+] as const;
