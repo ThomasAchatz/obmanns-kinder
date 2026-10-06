@@ -1228,6 +1228,10 @@ div.notice {
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
 }
+.admin-list > li.is-new {
+  border-color: var(--accent);
+  border-left-width: 6px;
+}
 .admin-actions {
   display: flex;
   gap: 6px;

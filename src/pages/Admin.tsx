@@ -1,6 +1,7 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useAuth } from "../lib/auth";
 import { clearCategoryCache, useLoad } from "../lib/hooks";
+import { timeAgo } from "../lib/format";
 import { generateVapidKeys, randomSecret } from "../lib/push";
 import { navigate } from "../lib/router";
 import { errorText, invoke, supabase } from "../lib/supabase";
@@ -34,11 +35,107 @@ export function AdminPage() {
   }
   return (
     <Page title="Admin" back={() => navigate("/profil")}>
+      <NewQuestions />
       <Users />
       <Reports />
       <Categories />
       <PushSetup />
     </Page>
+  );
+}
+
+type PlayerQuestion = {
+  id: number;
+  text: string;
+  correct: string;
+  created_at: string;
+  is_active: boolean;
+  category: { name: string; icon: string } | null;
+  author: { display_name: string } | null;
+};
+
+// Zuletzt gesehen merkt sich nur dieses Gerät, damit „neu“ markiert werden kann.
+const SEEN_KEY = "obmanns-admin-fragen-gesehen";
+function readSeen(): number {
+  try {
+    return Number(localStorage.getItem(SEEN_KEY)) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function NewQuestions() {
+  const [limit, setLimit] = useState(15);
+  const [seen] = useState(readSeen);
+  const list = useLoad(async () => {
+    const { data, error } = await supabase
+      .from("questions")
+      .select(
+        "id, text, correct, created_at, is_active, category:categories!questions_category_id_fkey(name, icon), author:profiles!questions_author_id_fkey(display_name)",
+      )
+      .not("author_id", "is", null)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+    if (error) throw error;
+    return data as unknown as PlayerQuestion[];
+  }, [limit]);
+
+  // Beim Verlassen des Admin-Bereichs gelten die angezeigten Fragen als gesehen
+  useEffect(() => {
+    return () => {
+      try {
+        localStorage.setItem(SEEN_KEY, String(Date.now()));
+      } catch {
+        /* privater Modus */
+      }
+    };
+  }, []);
+
+  const rows = list.data ?? [];
+  const fresh = rows.filter((q) => new Date(q.created_at).getTime() > seen).length;
+
+  return (
+    <section className="section">
+      <div className="section-head">
+        <h2>Neue Fragen von Spielern</h2>
+        {fresh > 0 && <span className="pill pill-brass">{fresh} neu</span>}
+      </div>
+      <ErrorBox error={list.error} retry={list.reload} />
+      {list.loading && !list.data ? (
+        <Loading />
+      ) : rows.length === 0 ? (
+        <p className="muted">Noch hat niemand eine eigene Frage hochgeladen.</p>
+      ) : (
+        <ul className="admin-list">
+          {rows.map((q) => {
+            const isNew = new Date(q.created_at).getTime() > seen;
+            return (
+              <li key={q.id} className={isNew ? "is-new" : ""}>
+                <div>
+                  <p className="muted small">
+                    {q.category ? `${q.category.icon} ${q.category.name}` : ""} · {q.author?.display_name} · {timeAgo(q.created_at)}
+                    {!q.is_active && " · pausiert"}
+                  </p>
+                  <p className="strong">{q.text}</p>
+                  <p className="small">Lösung: {q.correct}</p>
+                </div>
+                <div className="admin-actions">
+                  <button className="btn btn-small btn-ghost" onClick={() => navigate(`/fragen/${q.id}`)}>
+                    Ansehen
+                  </button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      {rows.length >= limit && (
+        <button className="btn btn-ghost btn-block" onClick={() => setLimit((l) => l + 15)}>
+          Ältere anzeigen
+        </button>
+      )}
+    </section>
   );
 }
 

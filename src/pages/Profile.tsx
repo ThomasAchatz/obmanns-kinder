@@ -34,6 +34,24 @@ export function ProfilePage() {
     return data as unknown as Winner[];
   });
 
+  // Für den Obmann: wie viele Spieler-Fragen seit dem letzten Blick in den Admin-Bereich?
+  const newQuestions = useLoad(async () => {
+    if (!profile!.is_admin) return 0;
+    let seen = 0;
+    try {
+      seen = Number(localStorage.getItem("obmanns-admin-fragen-gesehen")) || 0;
+    } catch {
+      /* privater Modus */
+    }
+    const { count } = await supabase
+      .from("questions")
+      .select("id", { count: "exact", head: true })
+      .not("author_id", "is", null)
+      .is("deleted_at", null)
+      .gt("created_at", new Date(seen).toISOString());
+    return count ?? 0;
+  });
+
   const [push, setPush] = useState<PushState | null>(null);
   const [pushBusy, setPushBusy] = useState(false);
   useEffect(() => {
@@ -214,6 +232,11 @@ export function ProfilePage() {
       {profile!.is_admin && (
         <button className="btn btn-block" onClick={() => navigate("/admin")}>
           Admin-Bereich
+          {(newQuestions.data ?? 0) > 0 && (
+            <span className="pill pill-brass">
+              {newQuestions.data} {newQuestions.data === 1 ? "neue Frage" : "neue Fragen"}
+            </span>
+          )}
         </button>
       )}
       <button className="btn btn-ghost btn-block" onClick={signOut}>
