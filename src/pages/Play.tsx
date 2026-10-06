@@ -8,8 +8,8 @@ import { ErrorBox, Loading, Page } from "../components/ui";
 
 const modes: { id: Mode; title: string; text: string }[] = [
   { id: "duel", title: "Duell", text: "Ein Freund, dieselben 5 Fragen aus 5 Kategorien. Du spielst zuerst." },
-  { id: "challenge", title: "Gruppen-Challenge", text: "Mehrere spielen dieselben 5 Fragen, die beste Runde gewinnt." },
-  { id: "solo", title: "Solo-Quiz", text: "5 Fragen aus einer Kategorie zum Üben. Zählt nicht für die Rangliste." },
+  { id: "challenge", title: "Gruppe", text: "Mehrere spielen dieselben 5 Fragen, die beste Runde gewinnt." },
+  { id: "solo", title: "Solo", text: "5 Fragen aus einer Kategorie zum Üben. Zählt nicht für die Rangliste." },
 ];
 
 export function PlayPage() {

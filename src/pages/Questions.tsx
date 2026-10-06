@@ -32,6 +32,7 @@ export function QuestionsPage() {
   };
   const total = (counts.data ?? []).reduce((s, c) => s + c.total, 0);
   const thin = (counts.data ?? []).filter((c) => c.total < 10);
+  const maxCount = Math.max(1, ...(counts.data ?? []).map((c) => c.total));
 
   return (
     <Page title="Fragen">
@@ -40,11 +41,30 @@ export function QuestionsPage() {
       </button>
 
       <section className="section">
-        <h2>Fragenpool</h2>
-        <p className="muted">
-          {total} Fragen insgesamt.
-          {thin.length > 0 && ` Hier fehlen noch welche: ${thin.map((c) => `${c.icon} ${c.name} (${c.total})`).join(", ")}.`}
-        </p>
+        <div className="section-head">
+          <h2>Fragenpool</h2>
+          <span className="muted small">{total} Fragen</span>
+        </div>
+        <ul className="meters">
+          {(counts.data ?? []).map((c) => (
+            <li key={c.category_id} className={c.total < 10 ? "is-low" : ""}>
+              <span className="meter-label">
+                <span className="meter-icon" aria-hidden="true">
+                  {c.icon}
+                </span>
+                {c.name}
+              </span>
+              <span className="meter-value">
+                {c.total}
+                {c.mine > 0 && <span className="meter-sub"> · {c.mine} von dir</span>}
+              </span>
+              <span className="meter-track" aria-hidden="true">
+                <span className="meter-fill" style={{ width: `${Math.min(100, (c.total / maxCount) * 100)}%` }} />
+              </span>
+            </li>
+          ))}
+        </ul>
+        {thin.length > 0 && <p className="muted small">Kategorien mit weniger als 10 Fragen sind markiert. Dort freuen sich alle über Nachschub.</p>}
       </section>
 
       <section className="section">

@@ -116,7 +116,7 @@ export function ProfilePage() {
                 <tr key={r.user_id} className={r.user_id === profile!.id ? "me" : ""}>
                   <td>{i + 1}</td>
                   <td>{r.display_name}</td>
-                  <td className="num strong">{r.points}</td>
+                  <td className="num points">{r.points}</td>
                   <td className="num">
                     {r.wins}/{r.games}
                   </td>
@@ -136,9 +136,9 @@ export function ProfilePage() {
             {winners.data!.map((w) => (
               <li key={w.month + w.user_id}>
                 <span>{monthName(w.month)}</span>
-                <strong>
-                  {w.profiles?.display_name} · {w.points} P.
-                </strong>
+                <span className="list-value">
+                  {w.profiles?.display_name} <span className="muted">{w.points} P.</span>
+                </span>
               </li>
             ))}
           </ul>
@@ -150,16 +150,27 @@ export function ProfilePage() {
         {stats.loading && !stats.data ? (
           <Loading />
         ) : (
-          <ul className="bars">
+          <ul className="meters">
             {(stats.data ?? []).map((s) => (
-              <li key={s.category_id}>
-                <span className="bars-label">
-                  {s.icon} {s.name}
+              <li key={s.category_id} className={s.answered ? "" : "is-empty"}>
+                <span className="meter-label">
+                  <span className="meter-icon" aria-hidden="true">
+                    {s.icon}
+                  </span>
+                  {s.name}
                 </span>
-                <span className="bars-track" aria-hidden="true">
-                  <span className="bars-fill" style={{ width: `${s.rate ?? 0}%` }} />
+                <span className="meter-value">
+                  {s.answered ? (
+                    <>
+                      {s.rate} %<span className="meter-sub"> · {s.correct}/{s.answered}</span>
+                    </>
+                  ) : (
+                    "noch nicht gespielt"
+                  )}
                 </span>
-                <span className="bars-value">{s.answered ? `${s.rate} %` : "–"}</span>
+                <span className="meter-track" aria-hidden="true">
+                  <span className="meter-fill" style={{ width: `${s.answered ? s.rate ?? 0 : 0}%` }} />
+                </span>
               </li>
             ))}
           </ul>
@@ -175,11 +186,14 @@ export function ProfilePage() {
               .map((l) => (
                 <li key={l.category_id}>
                   <span>
-                    {l.icon} {l.name}
+                    <span className="meter-icon" aria-hidden="true">
+                      {l.icon}
+                    </span>
+                    {l.name}
                   </span>
-                  <strong>
-                    {l.display_name} · {l.rate} %
-                  </strong>
+                  <span className="list-value">
+                    {l.display_name} <span className="muted">{l.rate} %</span>
+                  </span>
                 </li>
               ))}
           </ul>
