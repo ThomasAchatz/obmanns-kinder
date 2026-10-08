@@ -6,9 +6,11 @@ import urllib.parse, urllib.request
 
 UA = "ObmannsKinderQuiz/0.1 (https://github.com/ThomasAchatz/obmanns-kinder; privates Freundes-Quiz)"
 OUT = "out"
+CALLS = 0
 os.makedirs(OUT + "/crops", exist_ok=True)
 
 def get(url, data=None, tries=4):
+    global CALLS; CALLS += 1
     for t in range(tries):
         try:
             req = urllib.request.Request(url, data=data, headers={"User-Agent": UA, "Accept": "application/json"})
@@ -76,7 +78,8 @@ for i in range(0, len(keys), 50):
             "sex": "w" if "Q6581072" in sex else "m" if "Q6581097" in sex else "x",
             "born": born, "died": died, "sitelinks": ids[qid], "occ": occ, "images": imgs,
         })
-    time.sleep(0.3)
+    time.sleep(0.15)
+    if (i // 50) % 50 == 0: print("  Details", i, "/", len(keys), "behalten", len(people))
 print("nach Filter (dewiki, Jahrgang, lebte nach 1975):", len(people))
 
 # 3) Berufe benennen und in Sparten einteilen
