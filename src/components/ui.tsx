@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Icon } from "./Icon";
 import { useImageUrl, type Bucket } from "../lib/images";
+import { useSkin } from "../lib/skin";
 
 export function Page({ title, children, back }: { title: string; children: ReactNode; back?: () => void }) {
   useEffect(() => {
@@ -15,6 +16,7 @@ export function Page({ title, children, back }: { title: string; children: React
           </button>
         )}
         <h1>{title}</h1>
+        <SkinSwitch />
       </header>
       {children}
     </main>
@@ -172,5 +174,23 @@ export function Fold({ id, title, badge, children }: { id: string; title: string
       </summary>
       <div className="fold-body">{children}</div>
     </details>
+  );
+}
+
+/** Design umschalten (pro Gerät): Klassisch ⇄ Rätselheft */
+export function SkinSwitch() {
+  const [skin, setSkin] = useSkin();
+  const next = skin === "heft" ? "klassisch" : "heft";
+  return (
+    <button
+      type="button"
+      className="skin-switch"
+      onClick={() => setSkin(next)}
+      aria-label={skin === "heft" ? "Zum klassischen Design wechseln" : "Zum Rätselheft-Design wechseln"}
+      title="Design wechseln"
+    >
+      <b>Aa</b>
+      {skin === "heft" ? "Klassisch" : "Rätselheft"}
+    </button>
   );
 }

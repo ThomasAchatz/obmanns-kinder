@@ -1,0 +1,385 @@
+/* =====================================================================
+   Design „Rätselheft“: Zeitungspapier, Tinte, Signalrot.
+   Wird per Umschalter oben rechts gewählt (gespeichert pro Gerät).
+   Alles ist auf html[data-skin="heft"] begrenzt, das Standard-Design bleibt unberührt.
+   ===================================================================== */
+
+html[data-skin="heft"] {
+  --paper: #f3efe6;
+  --ink: #161514;
+  --red: #d2322a;
+
+  --bg: #f3efe6;
+  --surface: #fbf9f4;
+  --text: #161514;
+  --muted: #5f5a52;
+  --faint: #857e72;
+  --border: #161514;
+  --hair: #d6cfc1;
+  --primary: #161514;
+  --primary-hover: #2c2a27;
+  --on-primary: #f3efe6;
+  --good: #2f7a4a;
+  --good-soft: #dcebdd;
+  --bad: #d2322a;
+  --bad-soft: #f6dcd6;
+  --accent: #d2322a;
+  --accent-soft: #f8e1dd;
+  --link: #1f4e8c;
+  --track: #e2dccf;
+  --loden: #161514;
+
+  --target-paper: #fbf9f4;
+  --target-line: #161514;
+  --target-mirror: #161514;
+  --target-inner-line: #f3efe6;
+
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Lora", Georgia, serif;
+  --radius: 0;
+  --radius-small: 0;
+  color-scheme: light;
+}
+
+/* Ecken weg, außer bei Dingen, die rund sein müssen */
+html[data-skin="heft"] *,
+html[data-skin="heft"] *::before,
+html[data-skin="heft"] *::after {
+  border-radius: 0 !important;
+}
+html[data-skin="heft"] .avatar,
+html[data-skin="heft"] .dot,
+html[data-skin="heft"] .act-dot,
+html[data-skin="heft"] .switch,
+html[data-skin="heft"] .switch::after,
+html[data-skin="heft"] .turntable-disc,
+html[data-skin="heft"] .turntable-btn,
+html[data-skin="heft"] .song-cover-btn,
+html[data-skin="heft"] .icon-btn {
+  border-radius: 50% !important;
+}
+
+/* Papier mit feinem Kästchenraster */
+html[data-skin="heft"] body {
+  background-color: var(--paper);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.028) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+html[data-skin="heft"] h1,
+html[data-skin="heft"] h2,
+html[data-skin="heft"] h3 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+html[data-skin="heft"] .lead,
+html[data-skin="heft"] .chips-hint {
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+/* Zeitungskopf: doppelte Linie unter dem Seitentitel */
+html[data-skin="heft"] .page-head {
+  border-bottom: 3px double var(--ink);
+  padding-bottom: 8px;
+}
+html[data-skin="heft"] .section > h2,
+html[data-skin="heft"] .section-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+html[data-skin="heft"] .section > h2::after,
+html[data-skin="heft"] .section-head h2::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--ink);
+}
+
+/* Tab-Leiste */
+html[data-skin="heft"] .tabbar {
+  background: var(--paper);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-top: 3px double var(--ink);
+}
+html[data-skin="heft"] .tab.active {
+  color: var(--ink);
+}
+html[data-skin="heft"] .tab.active svg {
+  color: var(--red);
+}
+
+/* Knöpfe: schwarz, eckig */
+html[data-skin="heft"] .btn {
+  border-width: 1.5px;
+  font-weight: 600;
+}
+html[data-skin="heft"] .btn-primary {
+  letter-spacing: 0.01em;
+}
+html[data-skin="heft"] .btn-primary::after {
+  content: "→";
+  color: #ffb3ad;
+  margin-left: 2px;
+}
+html[data-skin="heft"] .btn-brass {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+html[data-skin="heft"] .link-btn {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* Umschalter */
+html[data-skin="heft"] .segmented {
+  background: transparent;
+  border: 1.5px solid var(--ink);
+  padding: 0;
+  gap: 0;
+}
+html[data-skin="heft"] .seg {
+  border-left: 1.5px solid var(--ink);
+}
+html[data-skin="heft"] .seg:first-child {
+  border-left: 0;
+}
+html[data-skin="heft"] .seg.active {
+  background: var(--red);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Auswahlkästchen */
+html[data-skin="heft"] .choice,
+html[data-skin="heft"] .kind,
+html[data-skin="heft"] .chip {
+  border: 1.5px solid var(--ink);
+}
+html[data-skin="heft"] .choice.active,
+html[data-skin="heft"] .kind.active {
+  box-shadow: 4px 4px 0 var(--red);
+  border-color: var(--ink);
+  color: var(--ink);
+}
+html[data-skin="heft"] .chip.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+html[data-skin="heft"] .chip.active::before {
+  content: "✕";
+  color: #ffb3ad;
+  font-weight: 700;
+}
+html[data-skin="heft"] .avatar {
+  border-radius: 0 !important;
+  border: 1.5px solid var(--ink);
+  background: var(--surface);
+  font-family: var(--font-display);
+}
+html[data-skin="heft"] .choice.active .avatar {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* Spielkarten */
+html[data-skin="heft"] .game-card {
+  border: 1.5px solid var(--ink);
+}
+html[data-skin="heft"] .game-card.is-turn {
+  box-shadow: 5px 5px 0 var(--ink);
+  border-color: var(--ink);
+}
+html[data-skin="heft"] .game-card h3 {
+  font-family: var(--font-display);
+}
+html[data-skin="heft"] .pill-brass {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: none;
+}
+
+/* Frage & Antworten: gestapelt wie Kästchen im Rätselheft */
+html[data-skin="heft"] .play-question {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+html[data-skin="heft"] .play-category {
+  color: var(--red);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+}
+html[data-skin="heft"] .answers {
+  gap: 0;
+}
+html[data-skin="heft"] .answer {
+  border: 1.5px solid var(--ink);
+  margin-top: -1.5px;
+}
+html[data-skin="heft"] .answer-letter {
+  border: 0;
+  opacity: 1;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  width: 18px;
+}
+html[data-skin="heft"] .answer.picked {
+  box-shadow: inset 4px 0 0 var(--ink);
+}
+html[data-skin="heft"] .answer.correct {
+  background: var(--good-soft);
+  border-color: var(--ink);
+}
+html[data-skin="heft"] .answer.correct .answer-letter {
+  background: transparent;
+  color: var(--good);
+}
+html[data-skin="heft"] .answer.wrong {
+  background: var(--bad-soft);
+  border-color: var(--ink);
+  text-decoration: line-through;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+}
+html[data-skin="heft"] .dot {
+  border-radius: 0 !important;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+}
+html[data-skin="heft"] .dot.done {
+  background: var(--ink);
+}
+html[data-skin="heft"] .dot.now {
+  background: var(--red);
+  border-color: var(--red);
+}
+html[data-skin="heft"] .timer {
+  border: 1.5px solid var(--ink);
+  height: 8px;
+  background: transparent;
+}
+html[data-skin="heft"] .timer-fill {
+  background: var(--ink);
+}
+html[data-skin="heft"] .timer-fill.urgent {
+  background: var(--red);
+}
+html[data-skin="heft"] .reveal,
+html[data-skin="heft"] .song-confirm,
+html[data-skin="heft"] .hard-pick,
+html[data-skin="heft"] .hard-hits {
+  border: 1.5px solid var(--ink);
+}
+html[data-skin="heft"] .reveal-explain {
+  border-left: 3px solid var(--red);
+  font-family: var(--font-display);
+  color: var(--text);
+}
+html[data-skin="heft"] .play-next {
+  background: linear-gradient(to top, var(--paper) 70%, transparent);
+}
+
+/* Ergebnis */
+html[data-skin="heft"] .result-headline {
+  display: inline-block;
+  border: 3px solid var(--red);
+  color: var(--red);
+  font-family: var(--font-ui);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 1.15rem;
+  padding: 6px 12px;
+  transform: rotate(-3deg);
+  margin: 4px 0 22px;
+}
+html[data-skin="heft"] .duel-score {
+  font-size: 3.5rem;
+  font-weight: 700;
+}
+
+/* Tabellen, Hinweise, Formulare */
+html[data-skin="heft"] .board th {
+  border-bottom: 1.5px solid var(--ink);
+}
+html[data-skin="heft"] .board tr.me td {
+  background: var(--accent-soft);
+}
+html[data-skin="heft"] .board td.points,
+html[data-skin="heft"] .stat-row dd,
+html[data-skin="heft"] .stat-games {
+  font-family: var(--font-display);
+}
+html[data-skin="heft"] .notice {
+  border: 1.5px solid var(--ink);
+  background: var(--surface);
+  box-shadow: 4px 4px 0 var(--red);
+}
+html[data-skin="heft"] input,
+html[data-skin="heft"] select,
+html[data-skin="heft"] textarea,
+html[data-skin="heft"] .search-field {
+  border: 1.5px solid var(--ink);
+}
+html[data-skin="heft"] .meter-fill {
+  background: var(--ink);
+}
+html[data-skin="heft"] .meters li.is-low .meter-fill {
+  background: var(--red);
+}
+html[data-skin="heft"] .fold {
+  border-color: var(--ink);
+}
+html[data-skin="heft"] .stat-row > div,
+html[data-skin="heft"] .review,
+html[data-skin="heft"] .card,
+html[data-skin="heft"] .fact,
+html[data-skin="heft"] .fact-teaser,
+html[data-skin="heft"] .question-row,
+html[data-skin="heft"] .song-teaser {
+  border: 1.5px solid var(--ink);
+}
+html[data-skin="heft"] .week {
+  background: var(--ink);
+}
+
+/* Umschalter oben rechts */
+.skin-switch {
+  margin-left: auto;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.skin-switch b {
+  font-family: Lora, Georgia, serif;
+  font-size: 0.9375rem;
+  color: var(--text);
+}
+html[data-skin="heft"] .skin-switch {
+  border: 1.5px solid var(--ink);
+}
+html[data-skin="heft"] .skin-switch b {
+  font-family: var(--font-ui);
+}
