@@ -1,0 +1,22 @@
+# Nur Vorbereitung der Bilderrunde: holt Kandidaten und eine Bild-Stichprobe als Artefakt.
+# Läuft ausschließlich auf dem Branch bilder-vorbereitung, ändert nichts an App oder Datenbank.
+name: Bilderrunde Probelauf
+on:
+  push:
+    branches: [bilder-vorbereitung]
+    paths: ["scripts/portraits-probe.py", ".github/workflows/portraits-probe.yml"]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install opencv-python-headless pillow numpy
+      - run: python scripts/portraits-probe.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: portraits-probe, path: out/, retention-days: 3 }
