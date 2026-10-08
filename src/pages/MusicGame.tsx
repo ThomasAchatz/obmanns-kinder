@@ -492,6 +492,7 @@ function MusicResult({ game, reload }: { game: MusicGameDetails; reload: () => v
         <div className="solo-board">
           <Record grooves={groovesFor(game, me)} size={180} />
           <p className="muted small">Jede Rille ist ein Song: oben leuchtet der Interpret, unten der Titel.</p>
+          <MusicAgainButton hard={!!game.hard} />
         </div>
       ) : (
         <ol className="ranking">
@@ -595,5 +596,26 @@ function MusicResult({ game, reload }: { game: MusicGameDetails; reload: () => v
         </button>
       )}
     </Page>
+  );
+}
+
+/** Solo: gleich noch eine Musikrunde im selben Modus */
+function MusicAgainButton({ hard }: { hard: boolean }) {
+  const [busy, setBusy] = useState(false);
+  async function again() {
+    unlockAudio();
+    setBusy(true);
+    try {
+      const id = await rpc<number>("create_music_game", { p_mode: "solo", p_invitees: [], p_hard: hard });
+      navigate(`/musik/${id}`);
+    } catch (e) {
+      toast((e as Error).message);
+      setBusy(false);
+    }
+  }
+  return (
+    <button className="btn btn-primary btn-block btn-big again-btn" onClick={again} disabled={busy}>
+      {busy ? "Songs werden gemischt …" : "Noch eins, los!"}
+    </button>
   );
 }

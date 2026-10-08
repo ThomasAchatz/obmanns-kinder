@@ -4,6 +4,7 @@ import { App } from "./App";
 import { AuthProvider } from "./lib/auth";
 import "./styles.css";
 import "./skin-heft.css";
+import "./skin-pop.css";
 import { applySkin, readSkin } from "./lib/skin";
 
 applySkin(readSkin());

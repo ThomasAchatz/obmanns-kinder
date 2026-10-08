@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Icon } from "./Icon";
 import { useImageUrl, type Bucket } from "../lib/images";
-import { useSkin } from "../lib/skin";
+import { SKINS, useSkin, type Skin } from "../lib/skin";
 
 export function Page({ title, children, back }: { title: string; children: ReactNode; back?: () => void }) {
   useEffect(() => {
@@ -177,20 +177,19 @@ export function Fold({ id, title, badge, children }: { id: string; title: string
   );
 }
 
-/** Design umschalten (pro Gerät): Klassisch ⇄ Rätselheft */
+/** Design wählen (pro Gerät): Klassisch, Rätselheft, Pop Art */
 export function SkinSwitch() {
   const [skin, setSkin] = useSkin();
-  const next = skin === "heft" ? "klassisch" : "heft";
   return (
-    <button
-      type="button"
-      className="skin-switch"
-      onClick={() => setSkin(next)}
-      aria-label={skin === "heft" ? "Zum klassischen Design wechseln" : "Zum Rätselheft-Design wechseln"}
-      title="Design wechseln"
-    >
-      <b>Aa</b>
-      {skin === "heft" ? "Klassisch" : "Rätselheft"}
-    </button>
+    <label className="skin-switch" title="Design wählen">
+      <b aria-hidden="true">Aa</b>
+      <select value={skin} onChange={(e) => setSkin(e.target.value as Skin)} aria-label="Design wählen">
+        {SKINS.map((s) => (
+          <option key={s.id} value={s.id}>
+            {s.label}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }

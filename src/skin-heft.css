@@ -354,20 +354,20 @@ html[data-skin="heft"] .week {
   background: var(--ink);
 }
 
-/* Umschalter oben rechts */
+/* Design-Auswahl oben rechts (gilt für alle Designs) */
 .skin-switch {
   margin-left: auto;
   flex: none;
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   min-height: 32px;
-  padding: 0 10px;
+  padding: 0 8px 0 10px;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: var(--surface);
   color: var(--muted);
-  font: inherit;
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
@@ -376,6 +376,33 @@ html[data-skin="heft"] .week {
   font-family: Lora, Georgia, serif;
   font-size: 0.9375rem;
   color: var(--text);
+}
+.skin-switch select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: auto;
+  border: 0 !important;
+  background: transparent;
+  box-shadow: none !important;
+  padding: 0 14px 0 2px;
+  min-height: 0;
+  font: inherit;
+  font-size: 16px; /* iOS zoomt sonst beim Antippen */
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+.skin-switch::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
 }
 html[data-skin="heft"] .skin-switch {
   border: 1.5px solid var(--ink);

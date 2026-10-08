@@ -3,7 +3,7 @@ import { useAuth } from "../lib/auth";
 import { useLoad } from "../lib/hooks";
 import { modeLabel, seconds } from "../lib/format";
 import { navigate } from "../lib/router";
-import { rpc } from "../lib/supabase";
+import { rpc, supabase } from "../lib/supabase";
 import type { AnswerResult, CurrentQuestion, GameDetails } from "../lib/types";
 import { Icon } from "../components/Icon";
 import { QuestionFeedback } from "../components/QuestionFeedback";
@@ -331,6 +331,7 @@ function Result({ game, reload }: { game: GameDetails; reload: () => void }) {
         <div className="solo-board">
           <Target shots={shotsFor(game, me)} size={180} />
           <p className="muted small">Je näher an der Mitte, desto schneller warst du.</p>
+          <AgainButton gameId={game.id} />
         </div>
       ) : (
         <ol className="ranking">
@@ -435,5 +436,27 @@ function ReviewCard({ q, game, me }: { q: GameDetails["questions"][number]; game
       <p className="muted small">Frage von {q.author}</p>
       <QuestionFeedback questionId={q.question_id} initialVote={q.my_vote} />
     </article>
+  );
+}
+
+/** Solo: gleich noch eine Runde mit denselben Kategorien */
+function AgainButton({ gameId }: { gameId: number }) {
+  const [busy, setBusy] = useState(false);
+  async function again() {
+    setBusy(true);
+    try {
+      const { data } = await supabase.from("games").select("category_ids").eq("id", gameId).maybeSingle();
+      const cats = (data as { category_ids: number[] | null } | null)?.category_ids ?? null;
+      const id = await rpc<number>("create_game", { p_mode: "solo", p_category_ids: cats && cats.length ? cats : null });
+      navigate(`/spiel/${id}`);
+    } catch (e) {
+      toast((e as Error).message);
+      setBusy(false);
+    }
+  }
+  return (
+    <button className="btn btn-primary btn-block btn-big again-btn" onClick={again} disabled={busy}>
+      {busy ? "Fragen werden gezogen …" : "Noch eins, los!"}
+    </button>
   );
 }

@@ -1,0 +1,431 @@
+/* =====================================================================
+   Design „Pop Art“: Comic-Raster, knallige Farben, dicke schwarze Konturen.
+   Begrenzt auf html[data-skin="pop"].
+   ===================================================================== */
+
+html[data-skin="pop"] {
+  --ink: #111111;
+  --yellow: #ffe600;
+  --pink: #ff2d87;
+  --cyan: #00b4ef;
+  --red: #ee2b2b;
+
+  --bg: #ffe600;
+  --surface: #ffffff;
+  --text: #111111;
+  --muted: #333333;
+  --faint: #555555;
+  --border: #111111;
+  --hair: #111111;
+  --primary: #ff2d87;
+  --primary-hover: #ff4796;
+  --on-primary: #ffffff;
+  --good: #0a8f55;
+  --good-soft: #b9f2d6;
+  --bad: #ee2b2b;
+  --bad-soft: #ffc9c9;
+  --accent: #00b4ef;
+  --accent-soft: #c8f0ff;
+  --link: #111111;
+  --track: #ffffff;
+  --loden: #111111;
+
+  --target-paper: #ffffff;
+  --target-line: #111111;
+  --target-mirror: #ff2d87;
+  --target-inner-line: #ffffff;
+
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Bangers", "Inter Display", "Impact", sans-serif;
+  --radius: 4px;
+  --radius-small: 4px;
+  color-scheme: light;
+}
+
+/* Rasterpunkte wie im Comicdruck */
+html[data-skin="pop"] body {
+  background-color: var(--yellow);
+  background-image: radial-gradient(rgba(255, 45, 135, 0.22) 22%, transparent 24%);
+  background-size: 14px 14px;
+}
+
+html[data-skin="pop"] h1,
+html[data-skin="pop"] h2,
+html[data-skin="pop"] h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+html[data-skin="pop"] h1 {
+  font-size: 2.1rem;
+  font-style: italic;
+  -webkit-text-stroke: 1px var(--ink);
+  color: #fff;
+  text-shadow: 3px 3px 0 var(--ink);
+  font-weight: 900;
+}
+html[data-skin="pop"] h2 {
+  font-size: 1.45rem;
+}
+html[data-skin="pop"] h3 {
+  font-size: 1.15rem;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+/* Alles mit dicker Kontur und hartem Schatten */
+html[data-skin="pop"] .btn,
+html[data-skin="pop"] .game-card,
+html[data-skin="pop"] .choice,
+html[data-skin="pop"] .kind,
+html[data-skin="pop"] .chip,
+html[data-skin="pop"] .answer,
+html[data-skin="pop"] .reveal,
+html[data-skin="pop"] .notice,
+html[data-skin="pop"] .review,
+html[data-skin="pop"] .card,
+html[data-skin="pop"] .fact,
+html[data-skin="pop"] .fact-teaser,
+html[data-skin="pop"] .question-row,
+html[data-skin="pop"] .song-teaser,
+html[data-skin="pop"] .stat-row > div,
+html[data-skin="pop"] .search-field,
+html[data-skin="pop"] .hard-pick,
+html[data-skin="pop"] .hard-hits,
+html[data-skin="pop"] .song-confirm,
+html[data-skin="pop"] input,
+html[data-skin="pop"] select,
+html[data-skin="pop"] textarea {
+  border: 3px solid var(--ink) !important;
+}
+html[data-skin="pop"] .game-card,
+html[data-skin="pop"] .answer,
+html[data-skin="pop"] .reveal,
+html[data-skin="pop"] .notice,
+html[data-skin="pop"] .review,
+html[data-skin="pop"] .card,
+html[data-skin="pop"] .fact,
+html[data-skin="pop"] .fact-teaser,
+html[data-skin="pop"] .btn {
+  box-shadow: 4px 4px 0 var(--ink);
+}
+html[data-skin="pop"] .page-head {
+  margin-bottom: 20px;
+}
+
+/* Knöpfe */
+html[data-skin="pop"] .btn-primary {
+  background: var(--pink);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 var(--ink);
+}
+html[data-skin="pop"] .btn-primary:not(:disabled):active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+html[data-skin="pop"] .btn-brass {
+  background: var(--cyan);
+  color: var(--ink);
+}
+html[data-skin="pop"] .btn-ghost {
+  background: #fff;
+}
+html[data-skin="pop"] .link-btn {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--pink);
+  text-decoration-thickness: 3px;
+}
+
+/* Umschalter & Auswahl */
+html[data-skin="pop"] .segmented {
+  background: #fff;
+  border: 3px solid var(--ink);
+  padding: 0;
+  gap: 0;
+}
+html[data-skin="pop"] .seg {
+  color: var(--ink);
+  font-weight: 700;
+  border-left: 3px solid var(--ink);
+}
+html[data-skin="pop"] .seg:first-child {
+  border-left: 0;
+}
+html[data-skin="pop"] .seg.active {
+  background: var(--cyan);
+  box-shadow: none;
+}
+html[data-skin="pop"] .choice.active,
+html[data-skin="pop"] .kind.active {
+  background: var(--cyan);
+  color: var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+html[data-skin="pop"] .chip {
+  font-weight: 600;
+  background: #fff;
+}
+html[data-skin="pop"] .chip.active {
+  background: var(--pink);
+  color: #fff;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+html[data-skin="pop"] .avatar {
+  border: 2.5px solid var(--ink);
+  background: var(--yellow);
+}
+html[data-skin="pop"] .choice.active .avatar {
+  background: var(--pink);
+  color: #fff;
+}
+
+/* Spielkarten */
+html[data-skin="pop"] .game-card.is-turn {
+  background: #fff;
+  box-shadow: 6px 6px 0 var(--pink), 6px 6px 0 3px var(--ink);
+}
+html[data-skin="pop"] .game-card h3 {
+  font-family: var(--font-ui);
+  font-weight: 800;
+  text-transform: none;
+}
+html[data-skin="pop"] .pill-brass {
+  background: var(--pink);
+  color: #fff;
+  border: 2px solid var(--ink);
+  font-weight: 800;
+  box-shadow: none;
+}
+html[data-skin="pop"] .pill {
+  border: 2px solid var(--ink);
+}
+
+/* Frage */
+html[data-skin="pop"] .play-question {
+  color: var(--ink);
+  font-style: normal;
+  letter-spacing: 0;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  line-height: 1.25;
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: 1.4rem;
+  text-transform: none;
+  background: #fff;
+  border: 3px solid var(--ink);
+  padding: 12px 14px;
+  box-shadow: 4px 4px 0 var(--ink);
+  position: relative;
+}
+html[data-skin="pop"] .play-category {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--yellow);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+}
+html[data-skin="pop"] .answers {
+  gap: 10px;
+}
+html[data-skin="pop"] .answer {
+  background: #fff;
+  font-weight: 700;
+}
+html[data-skin="pop"] .answer-letter {
+  border: 2.5px solid var(--ink);
+  opacity: 1;
+  background: var(--yellow);
+  color: var(--ink);
+  font-weight: 800;
+}
+html[data-skin="pop"] .answer.picked {
+  background: var(--accent-soft);
+}
+html[data-skin="pop"] .answer.correct {
+  background: var(--cyan);
+  border-color: var(--ink);
+}
+html[data-skin="pop"] .answer.correct .answer-letter {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--ink);
+}
+html[data-skin="pop"] .answer.wrong {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--ink);
+}
+html[data-skin="pop"] .answer.faded {
+  opacity: 0.55;
+}
+html[data-skin="pop"] .dot {
+  width: 12px;
+  height: 12px;
+  border: 2.5px solid var(--ink);
+  background: #fff;
+}
+html[data-skin="pop"] .dot.done {
+  background: var(--cyan);
+}
+html[data-skin="pop"] .dot.now {
+  background: var(--pink);
+}
+html[data-skin="pop"] .timer {
+  height: 12px;
+  border: 3px solid var(--ink);
+  background: #fff;
+}
+html[data-skin="pop"] .timer-fill {
+  background: repeating-linear-gradient(45deg, var(--pink) 0 8px, #ff6aa8 8px 16px);
+}
+html[data-skin="pop"] .timer-fill.urgent {
+  background: var(--red);
+}
+html[data-skin="pop"] .play-seconds {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--ink);
+}
+html[data-skin="pop"] .reveal {
+  background: #fff;
+}
+html[data-skin="pop"] .reveal h2 {
+  font-size: 1.8rem;
+  font-style: italic;
+}
+html[data-skin="pop"] .reveal-hit h2 {
+  color: var(--cyan);
+  -webkit-text-stroke: 1px var(--ink);
+  text-shadow: 2px 2px 0 var(--ink);
+}
+html[data-skin="pop"] .reveal-miss h2 {
+  color: var(--red);
+  -webkit-text-stroke: 1px var(--ink);
+  text-shadow: 2px 2px 0 var(--ink);
+}
+html[data-skin="pop"] .reveal-explain {
+  border-left: 4px solid var(--pink);
+  color: var(--text);
+}
+html[data-skin="pop"] .play-next {
+  background: linear-gradient(to top, var(--yellow) 70%, transparent);
+}
+
+/* Ergebnis als Comic-Explosion */
+html[data-skin="pop"] .result-headline {
+  display: inline-block;
+  position: relative;
+  isolation: isolate;
+  max-width: 88%;
+  color: #fff;
+  font-size: 2.3rem;
+  line-height: 1.05;
+  font-style: italic;
+  padding: 26px 34px;
+  -webkit-text-stroke: 1px var(--ink);
+  text-shadow: 3px 3px 0 var(--ink);
+  margin: 0 0 14px;
+  transform: rotate(-4deg);
+}
+html[data-skin="pop"] .result-headline::before {
+  content: "";
+  position: absolute;
+  inset: -4px -16px;
+  z-index: -1;
+  background: var(--pink);
+  clip-path: polygon(50% 0%, 61% 14%, 82% 4%, 79% 24%, 100% 30%, 87% 48%, 99% 70%, 78% 72%, 76% 96%, 58% 84%, 44% 100%, 37% 82%, 16% 94%, 19% 72%, 0% 66%, 12% 48%, 2% 24%, 24% 24%, 24% 2%, 41% 14%);
+}
+
+html[data-skin="pop"] .duel-score {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 400;
+  -webkit-text-stroke: 1.5px var(--ink);
+  color: #fff;
+  text-shadow: 4px 4px 0 var(--ink);
+}
+html[data-skin="pop"] .points-note {
+  display: inline-block;
+  background: #fff;
+  border: 3px solid var(--ink);
+  padding: 4px 10px;
+  color: var(--ink);
+  font-weight: 700;
+  margin: 0 0 18px;
+}
+
+/* Tab-Leiste: schwarz mit gelbem Aktiv-Zustand */
+html[data-skin="pop"] .tabbar {
+  background: var(--ink);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-top: 3px solid var(--ink);
+}
+html[data-skin="pop"] .tab {
+  color: #bbb;
+}
+html[data-skin="pop"] .tab.active {
+  color: var(--yellow);
+}
+
+/* Tabellen, Balken */
+html[data-skin="pop"] .board {
+  background: #fff;
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+html[data-skin="pop"] .board th,
+html[data-skin="pop"] .board td {
+  border-bottom: 2px solid var(--ink);
+  padding-left: 8px;
+  padding-right: 8px;
+}
+html[data-skin="pop"] .board tr.me td {
+  background: var(--accent-soft);
+}
+html[data-skin="pop"] .meter-track {
+  border: 2px solid var(--ink);
+  background: #fff;
+  height: 10px;
+}
+html[data-skin="pop"] .meter-fill {
+  background: var(--pink);
+}
+html[data-skin="pop"] .fold {
+  border-color: var(--ink);
+  border-width: 3px;
+}
+html[data-skin="pop"] .week {
+  background: var(--pink);
+}
+
+/* Design-Auswahl */
+html[data-skin="pop"] .skin-switch {
+  border: 3px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  background: #fff;
+  color: var(--ink);
+}
+html[data-skin="pop"] .skin-switch select {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent;
+  color: var(--ink);
+  font-weight: 800;
+}
+html[data-skin="pop"] .skin-switch b {
+  font-family: var(--font-display);
+  font-weight: 400;
+}
