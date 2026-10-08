@@ -25,21 +25,6 @@ def sparql(q):
     body = urllib.parse.urlencode({"query": q, "format": "json"}).encode()
     return json.loads(get("https://query.wikidata.org/sparql", data=body))["results"]["bindings"]
 
-# 1) Menschen mit Foto und vielen Wikipedia-Sprachversionen (Bekanntheit)
-ids = {}
-for lo, hi in [(35, 50), (50, 70), (70, 100), (100, 1000)]:
-    q = f"""SELECT ?p ?sl WHERE {{
-      ?p wikibase:sitelinks ?sl . hint:Prior hint:rangeSafe true .
-      FILTER(?sl >= {lo} && ?sl < {hi})
-      ?p wdt:P31 wd:Q5 ; wdt:P18 [] .
-    }}"""
-    rows = sparql(q)
-    for r in rows:
-        ids[r["p"]["value"].rsplit("/", 1)[1]] = int(r["sl"]["value"])
-    print(f"sitelinks {lo}-{hi}: {len(rows)}")
-print("Personen mit Foto gesamt:", len(ids))
-
-# 2) Details in 50er-Paketen
 def year(claims, pid):
     for c in claims.get(pid, []):
         v = c.get("mainsnak", {}).get("datavalue", {}).get("value", {})
@@ -54,44 +39,6 @@ def ent_ids(claims, pid):
         if isinstance(v, dict) and "id" in v: out.append(v["id"])
     return out
 
-people, occ_ids = [], set()
-keys = list(ids)
-for i in range(0, len(keys), 50):
-    chunk = keys[i:i + 50]
-    url = ("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=labels|aliases|claims|sitelinks"
-           "&languages=de|en&sitefilter=dewiki&ids=" + "|".join(chunk))
-    data = json.loads(get(url))["entities"]
-    for qid, e in data.items():
-        cl = e.get("claims", {})
-        dewiki = e.get("sitelinks", {}).get("dewiki", {}).get("title")
-        born, died = year(cl, "P569"), year(cl, "P570")
-        sex = ent_ids(cl, "P21")
-        imgs = [c["mainsnak"]["datavalue"]["value"] for c in cl.get("P18", []) if "datavalue" in c["mainsnak"]]
-        if not dewiki or not born or not imgs: continue
-        if born < 1915 or born > 2007: continue
-        if died and died < 1975: continue
-        occ = ent_ids(cl, "P106"); occ_ids.update(occ)
-        lab = e.get("labels", {})
-        people.append({
-            "qid": qid, "name": (lab.get("de") or lab.get("en") or {}).get("value", dewiki),
-            "dewiki": dewiki, "aliases": [a["value"] for a in e.get("aliases", {}).get("de", [])][:8],
-            "sex": "w" if "Q6581072" in sex else "m" if "Q6581097" in sex else "x",
-            "born": born, "died": died, "sitelinks": ids[qid], "occ": occ, "images": imgs,
-        })
-    time.sleep(0.15)
-    if (i // 50) % 50 == 0: print("  Details", i, "/", len(keys), "behalten", len(people))
-print("nach Filter (dewiki, Jahrgang, lebte nach 1975):", len(people))
-
-# 3) Berufe benennen und in Sparten einteilen
-occ_label = {}
-ol = list(occ_ids)
-for i in range(0, len(ol), 50):
-    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=labels&languages=de|en&ids=" + "|".join(ol[i:i + 50])
-    for qid, e in json.loads(get(url))["entities"].items():
-        l = e.get("labels", {})
-        occ_label[qid] = (l.get("de") or l.get("en") or {}).get("value", qid)
-    time.sleep(0.2)
-
 SPARTEN = [
     ("Musik", r"sänger|musiker|rapper|komponist|dj|songwriter|pianist|gitarrist|dirigent|schlagzeuger|band"),
     ("Film & TV", r"schauspiel|moderator|regisseur|model|komiker|kabarett|entertainer|webvideo|youtuber|influencer|drehbuch|filmproduzent|fernseh"),
@@ -103,25 +50,143 @@ SPARTEN = [
     ("Kunst", r"maler|bildhauer|künstler|fotograf|architekt"),
     ("Kirche", r"papst|bischof|theolog|geistlich"),
 ]
-for p in people:
-    labels = [occ_label.get(o, "") for o in p["occ"]]
-    p["occ_labels"] = labels[:6]
-    p["sparte"] = "Sonstige"
-    joined = " ".join(labels).lower()
-    for name, rx in SPARTEN:
-        if re.search(rx, joined):
-            p["sparte"] = name; break
-    del p["occ"]
+CACHE = "probe/kandidaten.json"
+if os.path.exists(CACHE):
+    people = json.load(open(CACHE)); print("Kandidaten aus Cache:", len(people))
+else:
+    # 1) Menschen mit Foto und vielen Wikipedia-Sprachversionen (Bekanntheit)
+    ids = {}
+    for lo, hi in [(35, 50), (50, 70), (70, 100), (100, 1000)]:
+        q = f"""SELECT ?p ?sl WHERE {{
+          ?p wikibase:sitelinks ?sl . hint:Prior hint:rangeSafe true .
+          FILTER(?sl >= {lo} && ?sl < {hi})
+          ?p wdt:P31 wd:Q5 ; wdt:P18 [] .
+        }}"""
+        rows = sparql(q)
+        for r in rows:
+            ids[r["p"]["value"].rsplit("/", 1)[1]] = int(r["sl"]["value"])
+        print(f"sitelinks {lo}-{hi}: {len(rows)}")
+    print("Personen mit Foto gesamt:", len(ids))
+
+    # 2) Details in 50er-Paketen
+    people, occ_ids = [], set()
+    keys = list(ids)
+    for i in range(0, len(keys), 50):
+        chunk = keys[i:i + 50]
+        url = ("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=labels|aliases|claims|sitelinks"
+               "&languages=de|en&sitefilter=dewiki&ids=" + "|".join(chunk))
+        data = json.loads(get(url))["entities"]
+        for qid, e in data.items():
+            cl = e.get("claims", {})
+            dewiki = e.get("sitelinks", {}).get("dewiki", {}).get("title")
+            born, died = year(cl, "P569"), year(cl, "P570")
+            sex = ent_ids(cl, "P21")
+            imgs = [c["mainsnak"]["datavalue"]["value"] for c in cl.get("P18", []) if "datavalue" in c["mainsnak"]]
+            if not dewiki or not born or not imgs: continue
+            if born < 1915 or born > 2007: continue
+            if died and died < 1975: continue
+            occ = ent_ids(cl, "P106"); occ_ids.update(occ)
+            lab = e.get("labels", {})
+            people.append({
+                "qid": qid, "name": (lab.get("de") or lab.get("en") or {}).get("value", dewiki),
+                "dewiki": dewiki, "aliases": [a["value"] for a in e.get("aliases", {}).get("de", [])][:8],
+                "sex": "w" if "Q6581072" in sex else "m" if "Q6581097" in sex else "x",
+                "born": born, "died": died, "sitelinks": ids[qid], "occ": occ, "images": imgs,
+            })
+        time.sleep(0.15)
+        if (i // 50) % 50 == 0: print("  Details", i, "/", len(keys), "behalten", len(people))
+    print("nach Filter (dewiki, Jahrgang, lebte nach 1975):", len(people))
+
+    # 3) Berufe benennen und in Sparten einteilen
+    occ_label = {}
+    ol = list(occ_ids)
+    for i in range(0, len(ol), 50):
+        url = "https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=labels&languages=de|en&ids=" + "|".join(ol[i:i + 50])
+        for qid, e in json.loads(get(url))["entities"].items():
+            l = e.get("labels", {})
+            occ_label[qid] = (l.get("de") or l.get("en") or {}).get("value", qid)
+        time.sleep(0.2)
+
+    for p in people:
+        labels = [occ_label.get(o, "") for o in p["occ"]]
+        p["occ_labels"] = labels[:6]
+        p["sparte"] = "Sonstige"
+        joined = " ".join(labels).lower()
+        for name, rx in SPARTEN:
+            if re.search(rx, joined):
+                p["sparte"] = name; break
+        del p["occ"]
 
 json.dump(people, open(OUT + "/kandidaten.json", "w"), ensure_ascii=False, indent=1)
 
+# 3b) Deutschsprachige mit weniger Sprachversionen ergänzen (z. B. TV-Gesichter)
+if not any(p.get("dach") for p in people):
+    have = {p["qid"] for p in people}
+    q = """SELECT DISTINCT ?p ?sl WHERE {
+      ?p wikibase:sitelinks ?sl . hint:Prior hint:rangeSafe true .
+      FILTER(?sl >= 12 && ?sl < 35)
+      ?p wdt:P31 wd:Q5 ; wdt:P18 [] ; wdt:P27 ?c .
+      VALUES ?c { wd:Q183 wd:Q40 wd:Q39 wd:Q16957 }
+    }"""
+    extra_ids = {r["p"]["value"].rsplit("/", 1)[1]: int(r["sl"]["value"]) for r in sparql(q)}
+    extra_ids = {k: v for k, v in extra_ids.items() if k not in have}
+    print("DACH-Ergänzung, Kandidaten:", len(extra_ids))
+    keys = list(extra_ids); new = []
+    for i in range(0, len(keys), 50):
+        url = ("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=labels|aliases|claims|sitelinks"
+               "&languages=de|en&sitefilter=dewiki&ids=" + "|".join(keys[i:i + 50]))
+        for qid, e in json.loads(get(url))["entities"].items():
+            cl = e.get("claims", {})
+            dewiki = e.get("sitelinks", {}).get("dewiki", {}).get("title")
+            born, died = year(cl, "P569"), year(cl, "P570")
+            sex = ent_ids(cl, "P21")
+            imgs = [c["mainsnak"]["datavalue"]["value"] for c in cl.get("P18", []) if "datavalue" in c["mainsnak"]]
+            if not dewiki or not born or not imgs or born < 1915 or born > 2007 or (died and died < 1975): continue
+            lab = e.get("labels", {})
+            new.append({"qid": qid, "name": (lab.get("de") or lab.get("en") or {}).get("value", dewiki), "dewiki": dewiki,
+                        "aliases": [a["value"] for a in e.get("aliases", {}).get("de", [])][:8],
+                        "sex": "w" if "Q6581072" in sex else "m" if "Q6581097" in sex else "x",
+                        "born": born, "died": died, "sitelinks": extra_ids[qid], "occ": ent_ids(cl, "P106"), "images": imgs, "dach": True})
+        time.sleep(0.1)
+    occ_label = {}
+    need = {o for p in new for o in p["occ"]}
+    ol = list(need)
+    for i in range(0, len(ol), 50):
+        url = "https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=labels&languages=de|en&ids=" + "|".join(ol[i:i + 50])
+        for qid, e in json.loads(get(url))["entities"].items():
+            l = e.get("labels", {}); occ_label[qid] = (l.get("de") or l.get("en") or {}).get("value", qid)
+    for p in new:
+        labels = [occ_label.get(o, "") for o in p["occ"]]; p["occ_labels"] = labels[:6]; p["sparte"] = "Sonstige"
+        for name, rx in SPARTEN:
+            if re.search(rx, " ".join(labels).lower()): p["sparte"] = name; break
+        del p["occ"]
+    people += new
+    print("mit DACH-Ergänzung:", len(people))
+
+# 3c) Bekanntheit in Deutschland: Aufrufe des deutschen Wikipedia-Artikels (12 Monate)
+from concurrent.futures import ThreadPoolExecutor
+def views(p):
+    if p.get("views") is not None: return
+    t = urllib.parse.quote(p["dewiki"].replace(" ", "_"), safe="")
+    url = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/user/{t}/monthly/2025090100/2026083100"
+    try:
+        p["views"] = sum(x["views"] for x in json.loads(get(url, tries=2))["items"])
+    except Exception:
+        p["views"] = 0
+todo = [p for p in people if p.get("views") is None and (p["sex"] == "w" or p["sitelinks"] >= 50 or p.get("dach"))]
+print("Seitenaufrufe holen für", len(todo))
+with ThreadPoolExecutor(8) as ex: list(ex.map(views, todo))
+json.dump(people, open(OUT + "/kandidaten.json", "w"), ensure_ascii=False, indent=0)
+vs = sorted((p.get("views") or 0 for p in people), reverse=True)
+print("Aufrufe: Top100 ab", vs[99], "Top500 ab", vs[499], "Top2000 ab", vs[1999])
+
 # 4) Stichprobe: ca. 60 % Frauen, gemischt nach Sparte, Bekanntheit und Jahrgang
 random.seed(7)
-def tier(sl): return "sehr bekannt" if sl >= 100 else "bekannt" if sl >= 60 else "mittel"
-pool = [p for p in people if p["sex"] in "wm"]
+def tier(v): return "sehr bekannt" if v >= 600000 else "bekannt" if v >= 200000 else "mittel"
+pool = [p for p in people if p["sex"] in "wm" and (p.get("views") or 0) >= 80000]
 sample, seen = [], set()
 by = {}
-for p in pool: by.setdefault((p["sex"], p["sparte"], tier(p["sitelinks"])), []).append(p)
+for p in pool: by.setdefault((p["sex"], p["sparte"], tier(p["views"])), []).append(p)
 for k in by: random.shuffle(by[k])
 want_w, want_m = 96, 64
 while (sum(1 for s in sample if s["sex"] == "w") < want_w or sum(1 for s in sample if s["sex"] == "m") < want_m) and any(by.values()):
