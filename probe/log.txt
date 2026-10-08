@@ -1,23 +1,18 @@
-sitelinks 35-50: 14917
-sitelinks 50-70: 6976
-sitelinks 70-100: 3187
-sitelinks 100-1000: 1527
-Personen mit Foto gesamt: 25125
-  Details 0 / 25125 behalten 30
-  Details 2500 / 25125 behalten 1611
-  Details 5000 / 25125 behalten 3252
-  Details 7500 / 25125 behalten 4851
-  Details 10000 / 25125 behalten 6388
-  Details 12500 / 25125 behalten 7961
-  Details 15000 / 25125 behalten 9550
-  Details 17500 / 25125 behalten 11054
-  Details 20000 / 25125 behalten 12526
-  Details 22500 / 25125 behalten 13812
-  Details 25000 / 25125 behalten 14979
-nach Filter (dewiki, Jahrgang, lebte nach 1975): 14991
-Stichprobe: 160
+Kandidaten aus Cache: 14991
 Traceback (most recent call last):
-  File "/home/runner/work/obmanns-kinder/obmanns-kinder/scripts/portraits-probe.py", line 159, in <module>
-    casc = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-           ^^^^^^^^^^^^^^^^^^^^^
-AttributeError: module 'cv2' has no attribute 'CascadeClassifier'
+  File "/home/runner/work/obmanns-kinder/obmanns-kinder/scripts/portraits-probe.py", line 131, in <module>
+    extra_ids = {r["p"]["value"].rsplit("/", 1)[1]: int(r["sl"]["value"]) for r in sparql(q)}
+                                                                                   ^^^^^^^^^
+  File "/home/runner/work/obmanns-kinder/obmanns-kinder/scripts/portraits-probe.py", line 26, in sparql
+    return json.loads(get("https://query.wikidata.org/sparql", data=body))["results"]["bindings"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/json/decoder.py", line 338, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/json/decoder.py", line 354, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Invalid control character at: line 77129 column 92 (char 1957941)
