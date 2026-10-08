@@ -2,7 +2,7 @@
 Wikidata/Wikimedia Commons, holt Lizenzangaben und schneidet eine Stichprobe als
 Porträt (4:5, Gesicht oben mittig) zu. Ergebnis landet in out/ (als Artefakt)."""
 import json, os, random, re, sys, time, io, html
-import urllib.parse, urllib.request
+import urllib.parse, urllib.request, urllib.error
 
 UA = "ObmannsKinderQuiz/0.1 (https://github.com/ThomasAchatz/obmanns-kinder; privates Freundes-Quiz)"
 OUT = "out"
@@ -16,6 +16,9 @@ def get(url, data=None, tries=4):
             req = urllib.request.Request(url, data=data, headers={"User-Agent": UA, "Accept": "application/json"})
             with urllib.request.urlopen(req, timeout=90) as r:
                 return r.read()
+        except urllib.error.HTTPError as e:
+            wait = int(e.headers.get("Retry-After") or 0) or 10 * (t + 1)
+            print("  retry", t, e.code, "warte", wait, file=sys.stderr); time.sleep(min(wait, 120))
         except Exception as e:
             print("  retry", t, e, file=sys.stderr)
             time.sleep(3 * (t + 1))
@@ -170,27 +173,40 @@ if not any(p.get("dach") for p in people):
     people += new
     print("mit DACH-Ergänzung:", len(people))
 
-# 3c) Bekanntheit in Deutschland: Aufrufe des deutschen Wikipedia-Artikels (12 Monate)
-from concurrent.futures import ThreadPoolExecutor
-def views(p):
-    if p.get("views") is not None: return
-    t = urllib.parse.quote(p["dewiki"].replace(" ", "_"), safe="")
-    url = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/user/{t}/monthly/2025090100/2026083100"
-    try:
-        p["views"] = sum(x["views"] for x in json.loads(get(url, tries=2))["items"])
-    except Exception:
-        p["views"] = 0
-todo = [p for p in people if p.get("views") is None and (p["sex"] == "w" or p["sitelinks"] >= 50 or p.get("dach"))]
+# 3c) Bekanntheit in Deutschland: Aufrufe des deutschen Artikels der letzten 60 Tage
+#     (MediaWiki-API, 50 Artikel pro Anfrage, nacheinander mit Pause)
+json.dump(people, open(OUT + "/kandidaten.json", "w"), ensure_ascii=False, indent=0)
+todo = [p for p in people if p.get("views") is None]
 print("Seitenaufrufe holen für", len(todo))
-with ThreadPoolExecutor(8) as ex: list(ex.map(views, todo))
+for i in range(0, len(todo), 50):
+    chunk = todo[i:i + 50]
+    bytitle = {p["dewiki"]: p for p in chunk}
+    params = {"action": "query", "format": "json", "prop": "pageviews", "pvipdays": "60", "redirects": "1",
+              "titles": "|".join(bytitle)}
+    tot = {}
+    while True:
+        d = json.loads(get("https://de.wikipedia.org/w/api.php?" + urllib.parse.urlencode(params)))
+        q = d.get("query", {})
+        back = {}
+        for n in q.get("normalized", []) + q.get("redirects", []):
+            back[n["to"]] = back.get(n["from"], n["from"])
+        for pg in q.get("pages", {}).values():
+            t = pg.get("title"); orig = back.get(t, t)
+            pv = pg.get("pageviews")
+            if pv: tot[orig] = tot.get(orig, 0) + sum(v for v in pv.values() if v)
+        if "continue" in d: params.update(d["continue"]); time.sleep(0.2)
+        else: break
+    for t, p in bytitle.items(): p["views"] = tot.get(t, 0)
+    time.sleep(0.25)
+    if (i // 50) % 40 == 0: print("  Aufrufe", i, "/", len(todo))
 json.dump(people, open(OUT + "/kandidaten.json", "w"), ensure_ascii=False, indent=0)
 vs = sorted((p.get("views") or 0 for p in people), reverse=True)
 print("Aufrufe: Top100 ab", vs[99], "Top500 ab", vs[499], "Top2000 ab", vs[1999])
 
 # 4) Stichprobe: ca. 60 % Frauen, gemischt nach Sparte, Bekanntheit und Jahrgang
 random.seed(7)
-def tier(v): return "sehr bekannt" if v >= 600000 else "bekannt" if v >= 200000 else "mittel"
-pool = [p for p in people if p["sex"] in "wm" and (p.get("views") or 0) >= 80000]
+def tier(v): return "sehr bekannt" if v >= 60000 else "bekannt" if v >= 20000 else "mittel"
+pool = [p for p in people if p["sex"] in "wm" and (p.get("views") or 0) >= 8000]
 sample, seen = [], set()
 by = {}
 for p in pool: by.setdefault((p["sex"], p["sparte"], tier(p["views"])), []).append(p)
