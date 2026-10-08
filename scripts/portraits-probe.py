@@ -122,13 +122,20 @@ json.dump(people, open(OUT + "/kandidaten.json", "w"), ensure_ascii=False, inden
 # 3b) Deutschsprachige mit weniger Sprachversionen ergänzen (z. B. TV-Gesichter)
 if not any(p.get("dach") for p in people):
     have = {p["qid"] for p in people}
-    q = """SELECT DISTINCT ?p ?sl WHERE {
-      ?p wikibase:sitelinks ?sl . hint:Prior hint:rangeSafe true .
-      FILTER(?sl >= 12 && ?sl < 35)
-      ?p wdt:P31 wd:Q5 ; wdt:P18 [] ; wdt:P27 ?c .
-      VALUES ?c { wd:Q183 wd:Q40 wd:Q39 wd:Q16957 }
-    }"""
-    extra_ids = {r["p"]["value"].rsplit("/", 1)[1]: int(r["sl"]["value"]) for r in sparql(q)}
+    extra_ids = {}
+    for land in ["Q183", "Q40", "Q39", "Q16957"]:
+        for lo, hi in [(12, 15), (15, 18), (18, 22), (22, 27), (27, 35)]:
+            q = f"""SELECT DISTINCT ?p ?sl WHERE {{
+              ?p wikibase:sitelinks ?sl . hint:Prior hint:rangeSafe true .
+              FILTER(?sl >= {lo} && ?sl < {hi})
+              ?p wdt:P27 wd:{land} ; wdt:P31 wd:Q5 ; wdt:P18 [] .
+            }}"""
+            try:
+                rows = sparql(q)
+            except Exception as e:
+                print("  Abfrage zu groß, übersprungen:", land, lo, hi, str(e)[:80]); continue
+            for r in rows: extra_ids[r["p"]["value"].rsplit("/", 1)[1]] = int(r["sl"]["value"])
+            print(f"  {land} {lo}-{hi}: {len(rows)}")
     extra_ids = {k: v for k, v in extra_ids.items() if k not in have}
     print("DACH-Ergänzung, Kandidaten:", len(extra_ids))
     keys = list(extra_ids); new = []
