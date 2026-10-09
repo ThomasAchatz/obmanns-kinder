@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "./lib/auth";
 import { match, navigate, useRoute } from "./lib/router";
 import { isConfigured } from "./lib/supabase";
@@ -48,8 +48,11 @@ function Routes({ route }: { route: string }) {
   return <HomePage />;
 }
 
+const TRIED = "obmanns-update-versucht";
+
 function useServiceWorker() {
   const [waiting, setWaiting] = useState<ServiceWorker | null>(null);
+  const regRef = useRef<ServiceWorkerRegistration | null>(null);
   useEffect(() => {
     if (!("serviceWorker" in navigator) || import.meta.env.DEV) return;
     let reloading = false;
@@ -59,12 +62,26 @@ function useServiceWorker() {
         window.location.reload();
       }
     });
+    // Wurde in dieser Sitzung schon aktualisiert und der Service Worker hängt trotzdem,
+    // zeigen wir den Hinweis nicht immer wieder (die App selbst ist nach dem Neuladen aktuell).
+    const offer = (sw: ServiceWorker | null) => {
+      if (!sw || !navigator.serviceWorker.controller) return;
+      let tried = "";
+      try {
+        tried = sessionStorage.getItem(TRIED) ?? "";
+      } catch {
+        /* egal */
+      }
+      if (tried && Date.now() - Number(tried) < 10 * 60 * 1000) return;
+      setWaiting(sw);
+    };
     navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).then((reg) => {
-      if (reg.waiting && navigator.serviceWorker.controller) setWaiting(reg.waiting);
+      regRef.current = reg;
+      offer(reg.waiting);
       reg.addEventListener("updatefound", () => {
         const sw = reg.installing;
         sw?.addEventListener("statechange", () => {
-          if (sw.state === "installed" && navigator.serviceWorker.controller) setWaiting(sw);
+          if (sw.state === "installed") offer(sw);
         });
       });
       // Beim Zurückkehren in die App nach Updates schauen
@@ -73,13 +90,29 @@ function useServiceWorker() {
       });
     });
   }, []);
-  return waiting;
+
+  const apply = useCallback(async () => {
+    try {
+      sessionStorage.setItem(TRIED, String(Date.now()));
+    } catch {
+      /* egal */
+    }
+    const reg = regRef.current ?? (await navigator.serviceWorker.getRegistration().catch(() => undefined)) ?? null;
+    const sw = reg?.waiting ?? waiting;
+    sw?.postMessage("SKIP_WAITING");
+    // Falls der neue Service Worker nicht übernimmt (z. B. iOS): trotzdem neu laden.
+    // Die Seite selbst kommt immer frisch aus dem Netz, damit ist die neue Version da.
+    setTimeout(() => window.location.reload(), sw ? 1500 : 0);
+  }, [waiting]);
+
+  return { waiting, apply };
 }
 
 export function App() {
   const { loading, session, profile } = useAuth();
   const route = useRoute();
-  const waiting = useServiceWorker();
+  const { waiting, apply } = useServiceWorker();
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -109,8 +142,15 @@ export function App() {
       {waiting && (
         <div className="update-banner" role="status">
           <span>Eine neue Version ist da.</span>
-          <button className="btn btn-small btn-brass" onClick={() => waiting.postMessage("SKIP_WAITING")}>
-            Jetzt aktualisieren
+          <button
+            className="btn btn-small btn-brass"
+            disabled={updating}
+            onClick={() => {
+              setUpdating(true);
+              apply();
+            }}
+          >
+            {updating ? "Wird geladen …" : "Jetzt aktualisieren"}
           </button>
         </div>
       )}
