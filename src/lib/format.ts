@@ -22,6 +22,16 @@ export const modeLabel = { solo: "Solo-Quiz", duel: "Duell", challenge: "Gruppen
 
 export const musicModeLabel = { solo: "Musik solo", duel: "Musik-Duell", challenge: "Musik-Challenge" } as const;
 
+export const bildModeLabel = { solo: "Bilder solo", duel: "Bilder-Duell", challenge: "Bilder-Challenge" } as const;
+
+/** Sparten der Bilderrunde */
+export const SPARTEN = ["Musik", "Film & TV", "Sport", "Politik & Adel", "Wissenschaft & Kultur"] as const;
+
+/** Adresse eines Porträts (liegt neben der App unter /bilder/) */
+export function faceUrl(image: string): string {
+  return `${import.meta.env.BASE_URL}bilder/${image}`;
+}
+
 /** Genres der Musikrunde (wie im Startpaket) */
 export const GENRES = [
   "Pop", "Rock", "Deutschpop", "Deutschrock", "Hip-Hop", "Deutschrap", "Dance", "Disco",

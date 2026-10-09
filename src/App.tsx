@@ -9,6 +9,7 @@ import { HomePage } from "./pages/Home";
 import { PlayPage } from "./pages/Play";
 import { GamePage } from "./pages/Game";
 import { MusicGamePage } from "./pages/MusicGame";
+import { BildGamePage } from "./pages/BildGame";
 import { SongAddPage } from "./pages/SongAdd";
 import { QuestionsPage } from "./pages/Questions";
 import { QuestionFormPage } from "./pages/QuestionForm";
@@ -25,7 +26,7 @@ const tabs: { path: string; label: string; icon: IconName }[] = [
 ];
 
 function activeTab(route: string) {
-  if (route.startsWith("/spiel") || route.startsWith("/musik")) return "/spielen";
+  if (route.startsWith("/spiel") || route.startsWith("/musik") || route.startsWith("/bilder")) return "/spielen";
   if (route.startsWith("/fragen") || route.startsWith("/songs")) return "/fragen";
   if (route.startsWith("/admin")) return "/profil";
   return tabs.find((t) => t.path !== "/" && route.startsWith(t.path))?.path ?? "/";
@@ -35,6 +36,7 @@ function Routes({ route }: { route: string }) {
   let p: Record<string, string> | null;
   if ((p = match("/spiel/:id", route))) return <GamePage id={Number(p.id)} key={p.id} />;
   if ((p = match("/musik/:id", route))) return <MusicGamePage id={Number(p.id)} key={p.id} />;
+  if ((p = match("/bilder/:id", route))) return <BildGamePage id={Number(p.id)} key={p.id} />;
   if (match("/songs/neu", route)) return <SongAddPage />;
   if (match("/spielen", route)) return <PlayPage />;
   if (match("/fragen", route)) return <QuestionsPage />;
@@ -99,7 +101,7 @@ export function App() {
   if (!session) return <LoginPage />;
   if (!profile) return <Loading text="Profil wird geladen …" />;
 
-  const inGame = route.startsWith("/spiel/") || route.startsWith("/musik/");
+  const inGame = route.startsWith("/spiel/") || route.startsWith("/musik/") || route.startsWith("/bilder/");
   const current = activeTab(route);
 
   return (

@@ -3,7 +3,8 @@ import { useAuth } from "../lib/auth";
 import { useCategories, useLoad, usePlayers } from "../lib/hooks";
 import { navigate } from "../lib/router";
 import { rpc } from "../lib/supabase";
-import type { DayStatus, Kind, Mode, SongCounts } from "../lib/types";
+import type { BildCounts, DayStatus, Kind, Mode, SongCounts } from "../lib/types";
+import { SPARTEN } from "../lib/format";
 import { Icon } from "../components/Icon";
 import { ErrorBox, Loading, Page } from "../components/ui";
 
@@ -11,6 +12,12 @@ const musicText: Record<Mode, string> = {
   duel: "Ein Freund, dieselben 5 Songs. Erst den Interpreten erraten, dann den Titel. Du hörst zuerst.",
   challenge: "Mehrere hören dieselben 5 Songs, die meisten Punkte gewinnen.",
   solo: "5 Songs quer durch alle Jahrzehnte zum Üben. Zählt nicht für die Rangliste.",
+};
+
+const bildText: Record<Mode, string> = {
+  duel: "Ein Freund, dieselben 5 Gesichter. Easy: vier Namen zur Auswahl. Du rätst zuerst.",
+  challenge: "Mehrere raten dieselben 5 Gesichter, die meisten Treffer gewinnen.",
+  solo: "5 Gesichter zum Üben. Zählt nicht für die Rangliste.",
 };
 
 const modes: { id: Mode; title: string; text: string }[] = [
@@ -23,9 +30,13 @@ export function PlayPage() {
   const { profile } = useAuth();
   const players = usePlayers();
   const categories = useCategories();
-  const [kind, setKind] = useState<Kind>(() => (window.location.hash.includes("art=musik") ? "music" : "quiz"));
+  const [kind, setKind] = useState<Kind>(() =>
+    window.location.hash.includes("art=musik") ? "music" : window.location.hash.includes("art=bilder") ? "bild" : "quiz",
+  );
   const day = useLoad(() => rpc<DayStatus>("my_day_status", { p_kind: kind }), [kind]);
   const songs = useLoad(() => rpc<SongCounts>("song_counts"));
+  const faces = useLoad(() => rpc<BildCounts>("bild_counts"));
+  const [sparten, setSparten] = useState<string[]>([]);
   const [mode, setMode] = useState<Mode>("duel");
   const [hard, setHard] = useState(() => window.location.hash.includes("hard=1"));
   const [picked, setPicked] = useState<string[]>([]);
@@ -46,6 +57,16 @@ export function PlayPage() {
     setBusy(true);
     setError(null);
     try {
+      if (kind === "bild") {
+        const id = await rpc<number>("create_bild_game", {
+          p_mode: mode,
+          p_invitees: mode === "solo" ? [] : picked,
+          p_hard: hard,
+          p_sparten: sparten.length ? sparten : null,
+        });
+        navigate(`/bilder/${id}`);
+        return;
+      }
       if (kind === "music") {
         const id = await rpc<number>("create_music_game", { p_mode: mode, p_invitees: mode === "solo" ? [] : picked, p_hard: hard });
         navigate(`/musik/${id}`);
@@ -65,8 +86,8 @@ export function PlayPage() {
 
   return (
     <Page title="Spielen">
-      <div className="kind-switch" role="tablist" aria-label="Spielart">
-        {(["quiz", "music"] as Kind[]).map((k) => (
+      <div className="kind-switch kind-switch-3" role="tablist" aria-label="Spielart">
+        {(["quiz", "music", "bild"] as Kind[]).map((k) => (
           <button
             key={k}
             role="tab"
@@ -77,10 +98,18 @@ export function PlayPage() {
               setError(null);
             }}
           >
-            <Icon name={k === "quiz" ? "play" : "music"} size={20} />
-            <span className="kind-name">{k === "quiz" ? "Quiz" : "Musik"}</span>
+            <Icon name={k === "quiz" ? "play" : k === "music" ? "music" : "face"} size={20} />
+            <span className="kind-name">{k === "quiz" ? "Quiz" : k === "music" ? "Musik" : "Bilder"}</span>
             <span className="kind-sub">
-              {k === "quiz" ? "Wissensfragen" : songs.data ? `${songs.data.total} Songs im Pool` : "Interpret und Titel"}
+              {k === "quiz"
+                ? "Wissensfragen"
+                : k === "music"
+                  ? songs.data
+                    ? `${songs.data.total} Songs`
+                    : "Interpret, Titel"
+                  : faces.data
+                    ? `${faces.data.total} Gesichter`
+                    : "Wer ist das?"}
             </span>
           </button>
         ))}
@@ -102,12 +131,12 @@ export function PlayPage() {
           </button>
         ))}
       </div>
-      {kind === "music" && (
+      {kind !== "quiz" && (
         <div className="level-row">
           <span className="level-label">Schwierigkeit</span>
           <div className="segmented segmented-small" role="tablist" aria-label="Schwierigkeit">
             <button role="tab" aria-selected={!hard} className={!hard ? "seg active" : "seg"} onClick={() => setHard(false)}>
-              Normal
+              {kind === "bild" ? "Easy" : "Normal"}
             </button>
             <button role="tab" aria-selected={hard} className={hard ? "seg active" : "seg"} onClick={() => setHard(true)}>
               Hard
@@ -116,7 +145,11 @@ export function PlayPage() {
         </div>
       )}
       <p className="lead">
-        {kind === "music"
+        {kind === "bild"
+          ? hard
+            ? bildText[mode].replace("Easy: vier Namen zur Auswahl.", "Hard: Namen selbst tippen, 30 Sekunden pro Gesicht.")
+            : bildText[mode]
+          : kind === "music"
           ? hard
             ? musicText[mode].replace("Erst den Interpreten erraten, dann den Titel.", "Keine Antworten zur Auswahl: Song selbst eintippen, 45 Sekunden pro Song.")
             : musicText[mode]
@@ -124,7 +157,7 @@ export function PlayPage() {
       </p>
       {mode !== "solo" && day.data && day.data.counted_games >= day.data.limit_games && (
         <div className="notice">
-          Du hast heute schon {day.data.limit_games} {kind === "music" ? "Musik-Wertungsspiele" : "Wertungsspiele"}. Weitere Spiele machen Spaß, bringen aber bis morgen keine Punkte.
+          Du hast heute schon {day.data.limit_games} {kind === "music" ? "Musik-Wertungsspiele" : kind === "bild" ? "Bilder-Wertungsspiele" : "Wertungsspiele"}. Weitere Spiele machen Spaß, bringen aber bis morgen keine Punkte.
         </div>
       )}
 
@@ -196,14 +229,45 @@ export function PlayPage() {
         </section>
       )}
 
+      {kind === "bild" && (
+        <section className="section">
+          <h2>Wer kommt dran?</h2>
+          <div className="chips" role="group" aria-label="Sparten">
+            <button className={sparten.length === 0 ? "chip active" : "chip"} aria-pressed={sparten.length === 0} onClick={() => setSparten([])}>
+              Alle
+            </button>
+            {SPARTEN.map((s) => (
+              <button
+                key={s}
+                className={sparten.includes(s) ? "chip active" : "chip"}
+                aria-pressed={sparten.includes(s)}
+                onClick={() => setSparten((x) => (x.includes(s) ? x.filter((y) => y !== s) : [...x, s]))}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+          <p className="muted small chips-hint">
+            {sparten.length === 0
+              ? "Etwa zwei Drittel Frauen, gemischt aus allen Jahrzehnten seit 1970."
+              : `Nur ${sparten.join(", ")}. Etwa zwei Drittel Frauen.`}
+          </p>
+        </section>
+      )}
+
       <ErrorBox error={error} />
       <div className="sticky-action">
         <button className="btn btn-primary btn-block" disabled={!ready || busy} onClick={start}>
           {busy
             ? kind === "music"
               ? "Songs werden gemischt …"
-              : "Fragen werden gezogen …"
-            : kind === "music"
+              : kind === "bild"
+                ? "Gesichter werden gemischt …"
+                : "Fragen werden gezogen …"
+            : kind === "bild"
+              ? (mode === "duel" ? "Bilder-Duell starten" : mode === "challenge" ? "Bilder-Challenge starten" : "Gesichter raten") +
+                (hard ? " (Hard)" : "")
+              : kind === "music"
               ? (mode === "duel" ? "Musik-Duell starten" : mode === "challenge" ? "Musik-Challenge starten" : "Songs anhören") +
                 (hard ? " (Hard)" : "")
               : mode === "duel"

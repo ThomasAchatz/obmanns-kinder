@@ -429,3 +429,43 @@ html[data-skin="pop"] .skin-switch b {
   font-family: var(--font-display);
   font-weight: 400;
 }
+
+/* Bilderrunde */
+html[data-skin="pop"] .portrait {
+  border: 3px solid #111;
+  box-shadow: 6px 6px 0 #111;
+  border-radius: 0;
+}
+html[data-skin="pop"] .portrait-year {
+  background: #111;
+  color: #ffe600;
+  border-radius: 0;
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+}
+html[data-skin="pop"] .face-cell,
+html[data-skin="pop"] .person-row img,
+html[data-skin="pop"] .mix-list img {
+  border: 2px solid #111;
+  border-radius: 0;
+}
+html[data-skin="pop"] .person-row {
+  border: 3px solid #111;
+  box-shadow: 4px 4px 0 #111;
+  border-radius: 0;
+}
+html[data-skin="pop"] .portrait-stack span {
+  border: 3px solid #111;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 #111;
+}
+html[data-skin="pop"] .portrait-stack span:nth-child(1) {
+  background: var(--pink);
+}
+html[data-skin="pop"] .portrait-stack span:nth-child(2) {
+  background: var(--cyan, #00b4ef);
+}
+html[data-skin="pop"] .search-field input {
+  border: 0 !important;
+  box-shadow: none !important;
+}

@@ -10,7 +10,7 @@ export type Category = { id: number; name: string; icon: string; sort_order: num
 export type CategoryRef = { name: string; icon: string };
 
 export type Mode = "solo" | "duel" | "challenge";
-export type Kind = "quiz" | "music";
+export type Kind = "quiz" | "music" | "bild";
 
 export type GameListItem = {
   id: number;
@@ -236,3 +236,55 @@ export type SongSearchHit = {
 };
 
 export type SongPick = { artist: string; title: string };
+
+// ---------------------------------------------------------------------
+// Bilderrunde
+// ---------------------------------------------------------------------
+export type CurrentFace = {
+  done: false;
+  position: number;
+  total: number;
+  image: string;
+  photo_year: number | null;
+  hard: boolean;
+  seconds: number;
+  options: string[];
+  seconds_left: number;
+};
+
+export type FaceInfo = {
+  name: string;
+  description: string | null;
+  photo_year: number | null;
+  artist: string | null;
+  license: string | null;
+  source_url: string | null;
+  wiki_title: string | null;
+};
+
+export type FaceResult = FaceInfo & {
+  position: number;
+  correct: number;
+  ok: boolean;
+  ms: number;
+  timed_out: boolean;
+  finished: boolean;
+};
+
+export type FaceAnswer = { choice: number | null; guess: string | null; ok: boolean | null; ms: number | null };
+
+export type BildGameDetails = Omit<MusicGameDetails, "songs"> & {
+  items: (FaceInfo & {
+    position: number;
+    image: string;
+    options: string[];
+    correct: number;
+    answers: Record<string, FaceAnswer>;
+  })[];
+};
+
+export type BildCounts = { total: number; easy: number; women: number; by_sparte: Record<string, number> };
+
+export type NamePick = { name: string; sub: string | null };
+
+export type Confusion = { name: string; image: string; taken: string; n: number };

@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../lib/auth";
 import { useLoad } from "../lib/hooks";
-import { monthName } from "../lib/format";
+import { faceUrl, monthName } from "../lib/format";
 import { disablePush, enablePush, isIos, isStandalone, pushState, type PushState } from "../lib/push";
 import { navigate } from "../lib/router";
 import { errorText, rpc, supabase } from "../lib/supabase";
-import type { DayStatus, Kind, LeaderRow } from "../lib/types";
+import type { Confusion, DayStatus, Kind, LeaderRow } from "../lib/types";
 import { ErrorBox, Loading, Page, toast } from "../components/ui";
 
 type CatStat = { category_id: number; name: string; icon: string; answered: number; correct: number; rate: number | null };
 type Leader = { category_id: number; name: string; icon: string; user_id: string | null; display_name: string | null; answered: number | null; rate: number | null };
 type Winner = { month: string; points: number; user_id: string; profiles: { display_name: string } | null };
+
+const KIND_NAME: Record<Kind, string> = { quiz: "Quiz", music: "Musik", bild: "Bilder" };
 
 const APK_URL = "https://github.com/ThomasAchatz/obmanns-kinder/releases/latest/download/obmanns-kinder.apk";
 // In der Android-App (TWA) ist der Referrer android-app://…, dort braucht es den Link nicht.
@@ -87,14 +89,14 @@ export function ProfilePage() {
     <Page title={profile!.display_name}>
       <section className="section">
         <div className="segmented board-switch" role="tablist" aria-label="Rangliste">
-          {(["quiz", "music"] as Kind[]).map((k) => (
+          {(["quiz", "music", "bild"] as Kind[]).map((k) => (
             <button key={k} role="tab" aria-selected={kind === k} className={kind === k ? "seg active" : "seg"} onClick={() => setKind(k)}>
-              {k === "quiz" ? "Quiz" : "Musik"}
+              {KIND_NAME[k]}
             </button>
           ))}
         </div>
         <div className="section-head">
-          <h2>Rangliste {kind === "music" ? "Musik" : "Quiz"}</h2>
+          <h2>Rangliste {KIND_NAME[kind]}</h2>
           <div className="segmented segmented-small" role="tablist">
             <button role="tab" aria-selected={period === "month"} className={period === "month" ? "seg active" : "seg"} onClick={() => setPeriod("month")}>
               {monthName(new Date()).split(" ")[0]}
@@ -108,7 +110,7 @@ export function ProfilePage() {
         {board.loading && !board.data ? (
           <Loading />
         ) : rows.length === 0 ? (
-          <p className="muted">In diesem Monat wurde noch kein {kind === "music" ? "Musik-Duell" : "Duell"} beendet.</p>
+          <p className="muted">In diesem Monat wurde noch kein {kind === "music" ? "Musik-Duell" : kind === "bild" ? "Bilder-Duell" : "Duell"} beendet.</p>
         ) : (
           <table className="board">
             <thead>
@@ -117,7 +119,7 @@ export function ProfilePage() {
                 <th scope="col">Name</th>
                 <th scope="col" className="num">Punkte</th>
                 <th scope="col" className="num">Siege</th>
-                <th scope="col" className="num">Quote</th>
+                <th scope="col" className="num">{kind === "bild" ? "Erkannt" : "Quote"}</th>
               </tr>
             </thead>
             <tbody>
@@ -142,10 +144,13 @@ export function ProfilePage() {
         )}
         <p className="muted small">
           {kind === "music" && "Musik hat eine eigene Rangliste und ein eigenes Tageslimit. Pro Song gibt es bis zu 2 Treffer (Interpret und Titel). "}
+          {kind === "bild" && "Bilder haben eine eigene Rangliste und ein eigenes Tageslimit. Pro erkanntem Gesicht gibt es einen Treffer. "}
           Duell: Sieg 3, Unentschieden 1 Punkt. Challenge: Platz 1–3 bekommt 3/2/1 Punkte. Pro Tag zählen nur die ersten 3 beendeten
           Spiele, also höchstens 9 Punkte. Weiterspielen geht immer.
         </p>
       </section>
+
+      {kind === "bild" && <Confusions />}
 
       {(winners.data ?? []).length > 0 && (
         <section className="section">
@@ -275,5 +280,31 @@ export function ProfilePage() {
         Abmelden
       </button>
     </Page>
+  );
+}
+
+/** Bilderrunde: wer wird mit wem verwechselt (nur Gesichter, die man selbst schon gesehen hat) */
+function Confusions() {
+  const list = useLoad(() => rpc<Confusion[]>("bild_confusions", { p_limit: 5 }));
+  if (!list.data || list.data.length === 0) return null;
+  return (
+    <section className="section">
+      <h2>Am häufigsten verwechselt</h2>
+      <ul className="mix-list">
+        {list.data.map((c) => (
+          <li key={c.name + "|" + c.taken}>
+            <img src={faceUrl(c.image)} alt="" loading="lazy" />
+            <div>
+              <p>
+                <strong>{c.name}</strong>
+              </p>
+              <p className="muted small">
+                {c.n}× für {c.taken} gehalten
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

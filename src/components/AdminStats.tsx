@@ -14,6 +14,7 @@ type PlayerStat = {
   games: number;
   quiz: number;
   music: number;
+  bild?: number;
   duels: number;
   challenges: number;
   solo: number;
@@ -29,7 +30,7 @@ type PlayerStat = {
 type PairStat = { a_id: string; a_name: string; b_id: string; b_name: string; games: number; duels: number; a_wins: number; b_wins: number; last_at: string };
 type Stats = {
   days: number | null;
-  totals: { games: number; quiz: number; music: number; active_players: number };
+  totals: { games: number; quiz: number; music: number; bild?: number; active_players: number };
   players: PlayerStat[];
   pairs: PairStat[];
 };
@@ -91,8 +92,11 @@ export function AdminStats() {
               <dd>{s.totals.games}</dd>
             </div>
             <div>
-              <dt>davon Musik</dt>
-              <dd>{s.totals.music}</dd>
+              <dt>Musik · Bilder</dt>
+              <dd>
+                {s.totals.music}
+                <span className="stat-of"> · {s.totals.bild ?? 0}</span>
+              </dd>
             </div>
             <div>
               <dt>Aktiv</dt>
@@ -109,6 +113,7 @@ export function AdminStats() {
               const extra = [
                 p.quiz && plural(p.quiz, "Quiz", "Quiz"),
                 p.music && `${p.music} Musik`,
+                p.bild && `${p.bild} Bilder`,
                 p.solo && `${p.solo} solo`,
                 p.questions && plural(p.questions, "Frage", "Fragen"),
                 p.facts && plural(p.facts, "Wissen-Post", "Wissen-Posts"),

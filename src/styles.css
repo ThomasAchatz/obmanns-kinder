@@ -2154,3 +2154,246 @@ button.song-cover {
     animation: none !important;
   }
 }
+
+/* ---------------------------------------------------------------------
+   Bilderrunde
+   --------------------------------------------------------------------- */
+.kind-switch-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.kind-switch-3 .kind {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  min-width: 0;
+}
+.kind-switch-3 .kind svg {
+  margin-bottom: 4px;
+}
+.kind-switch-3 .kind-sub {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.portrait {
+  position: relative;
+  width: min(100%, 290px);
+  aspect-ratio: 4 / 5;
+  margin: 6px auto 4px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--track);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 10px 30px -12px rgba(0, 0, 0, 0.35);
+  flex: none;
+}
+.portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.portrait.is-loaded img {
+  opacity: 1;
+}
+.portrait.is-compact {
+  width: 168px;
+}
+.portrait.is-small {
+  width: 150px;
+}
+@media (max-height: 700px) {
+  .portrait {
+    width: min(100%, 240px);
+  }
+  .portrait.is-compact {
+    width: 140px;
+  }
+  .portrait.is-small {
+    width: 120px;
+  }
+}
+.portrait-year {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.bild-play .play-question {
+  text-align: center;
+  margin: 10px 0 12px;
+}
+.person-reveal {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 8px;
+}
+.person-reveal strong {
+  font-size: 1.15rem;
+}
+.person-reveal span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.photo-credit {
+  color: var(--faint);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+}
+.photo-credit a {
+  color: inherit;
+}
+.face-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin: 14px 0 6px;
+}
+.face-cell {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-small);
+  overflow: hidden;
+  background: var(--track);
+}
+.face-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.face-marks {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  padding: 3px 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+}
+.face-marks i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid #fff;
+  display: block;
+}
+.face-marks i.good {
+  background: #3fae68;
+}
+.face-marks i.bad {
+  background: #d2463b;
+}
+.face-legend {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+.person-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.person-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 8px;
+  border: 1px solid var(--hair, var(--border));
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.person-row img {
+  width: 54px;
+  height: 68px;
+  object-fit: cover;
+  border-radius: var(--radius-small);
+  flex: none;
+}
+.person-row > div {
+  min-width: 0;
+}
+.person-row p {
+  margin: 0;
+}
+.person-name {
+  font-weight: 700;
+}
+.person-desc {
+  margin-top: 1px !important;
+}
+.person-row .song-marks {
+  margin-top: 3px;
+}
+.person-row .photo-credit {
+  margin-top: 4px;
+  font-size: 0.6875rem;
+}
+.mix-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.mix-list li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.mix-list img {
+  width: 40px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: var(--radius-small);
+  flex: none;
+}
+.mix-list p {
+  margin: 0;
+}
+.portrait-stack {
+  position: relative;
+  width: 150px;
+  height: 170px;
+  margin: 8px auto 18px;
+}
+.portrait-stack span {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 22px -12px rgba(0, 0, 0, 0.4);
+}
+.portrait-stack span:nth-child(1) {
+  transform: rotate(-9deg) translate(-14px, 4px);
+  background: var(--track);
+}
+.portrait-stack span:nth-child(2) {
+  transform: rotate(7deg) translate(12px, 2px);
+  background: var(--track);
+}
+.portrait-stack span:nth-child(3) {
+  display: grid;
+  place-items: center;
+  color: var(--faint);
+}
+.game-card-mode .icon-face {
+  vertical-align: -2px;
+}

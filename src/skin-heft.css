@@ -410,3 +410,28 @@ html[data-skin="heft"] .skin-switch {
 html[data-skin="heft"] .skin-switch b {
   font-family: var(--font-ui);
 }
+
+/* Bilderrunde */
+html[data-skin="heft"] .portrait {
+  border: 1.5px solid #161514;
+  box-shadow: 5px 5px 0 #161514;
+  padding: 6px;
+  background: #fbf9f4;
+}
+html[data-skin="heft"] .portrait img {
+  filter: grayscale(0.15) contrast(1.03);
+}
+html[data-skin="heft"] .portrait-year {
+  left: 14px;
+  bottom: 14px;
+  background: #161514;
+  font-family: Lora, serif;
+  font-style: italic;
+}
+html[data-skin="heft"] .person-row,
+html[data-skin="heft"] .portrait-stack span {
+  border: 1.5px solid #161514;
+}
+html[data-skin="heft"] .hard-input input {
+  border: 0 !important;
+}
