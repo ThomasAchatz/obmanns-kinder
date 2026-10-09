@@ -1,0 +1,32 @@
+# Bilderrunde: Porträts holen und zuschneiden (nur auf dem Branch bilder-vorbereitung).
+name: Bilderrunde Porträts
+on:
+  push:
+    branches: [bilder-vorbereitung]
+    paths: ["scripts/portraits-build.py", ".github/workflows/portraits-build.yml"]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-deu >/dev/null
+          pip install "opencv-python-headless==4.10.0.84" pillow numpy
+      - name: Porträts
+        run: |
+          mkdir -p out
+          set -o pipefail
+          python -u scripts/portraits-build.py 2>&1 | tee out/log.txt
+      - name: Ergebnis auf den Branch legen
+        if: always()
+        run: |
+          rm -rf build && mv out build
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add build
+          git commit -qm "Porträts zugeschnitten [skip ci]" && git push origin HEAD:bilder-vorbereitung || echo "nichts"
