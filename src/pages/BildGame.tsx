@@ -47,7 +47,7 @@ function BildIntro({ game, onStart }: { game: BildGameDetails; onStart: () => vo
   const others = game.players.filter((p) => p.user_id !== profile!.id);
   const creator = game.players.find((p) => p.user_id === game.created_by);
   return (
-    <Page title={pageTitle(game)} back={() => navigate("/")}>
+    <Page title={pageTitle(game)} back={() => navigate(game.mode === "league" ? "/liga" : "/")}>
       <div className="intro">
         <div className="portrait-stack" aria-hidden="true">
           <span />
@@ -67,6 +67,7 @@ function BildIntro({ game, onStart }: { game: BildGameDetails; onStart: () => vo
           <p className="lead">Bilder-Challenge von {creator?.display_name} mit {game.players.length} Leuten. Alle sehen dieselben Gesichter.</p>
         )}
         {game.mode === "solo" && <p className="lead">5 Gesichter zum Üben, quer durch alle Jahrzehnte seit 1970.</p>}
+        {game.mode === "league" && <p className="lead">Weekend League: Alle Angemeldeten sehen dieselben Gesichter.</p>}
         {game.hard ? (
           <ul className="rules">
             <li>Hard-Mode: keine Namen zur Auswahl</li>
@@ -201,7 +202,7 @@ function BildPlayer({ game, onFinished }: { game: BildGameDetails; onFinished: (
 
   if (error)
     return (
-      <Page title={pageTitle(game)} back={() => navigate("/")}>
+      <Page title={pageTitle(game)} back={() => navigate(game.mode === "league" ? "/liga" : "/")}>
         <ErrorBox error={error} retry={load} />
       </Page>
     );
@@ -220,7 +221,7 @@ function BildPlayer({ game, onFinished }: { game: BildGameDetails; onFinished: (
   return (
     <main className={result ? "play bild-play has-next" : "play bild-play"}>
       <div className="play-top">
-        <button className="icon-btn" aria-label="Zurück zum Start" onClick={() => navigate("/")}>
+        <button className="icon-btn" aria-label="Zurück zum Start" onClick={() => navigate(game.mode === "league" ? "/liga" : "/")}>
           <Icon name="back" />
         </button>
         <div className="play-progress" aria-label={`Gesicht ${face.position} von 5`}>
@@ -343,7 +344,7 @@ function BildResult({ game, reload }: { game: BildGameDetails; reload: () => voi
   const stripPlayers = game.mode === "duel" && other && other.status === "done" ? [me, other.user_id] : [me];
 
   return (
-    <Page title={pageTitle(game)} back={() => navigate("/")}>
+    <Page title={pageTitle(game)} back={() => navigate(game.mode === "league" ? "/liga" : "/")}>
       <h2 className="result-headline">{headline}</h2>
       {game.mode !== "solo" && game.status !== "open" && game.my_points && (
         <p className={game.my_points.counted ? "points-note" : "points-note is-off"}>
@@ -468,10 +469,17 @@ function BildResult({ game, reload }: { game: BildGameDetails; reload: () => voi
         </section>
       )}
 
-      {game.mode !== "solo" && game.status !== "open" && (
-        <button className="btn btn-primary btn-block" onClick={() => navigate(game.hard ? "/spielen?art=bilder&hard=1" : "/spielen?art=bilder")}>
-          Neue Bilderrunde
+      {game.mode === "league" ? (
+        <button className="btn btn-primary btn-block" onClick={() => navigate("/liga")}>
+          Zur Weekend League
         </button>
+      ) : (
+        game.mode !== "solo" &&
+        game.status !== "open" && (
+          <button className="btn btn-primary btn-block" onClick={() => navigate(game.hard ? "/spielen?art=bilder&hard=1" : "/spielen?art=bilder")}>
+            Neue Bilderrunde
+          </button>
+        )
       )}
     </Page>
   );

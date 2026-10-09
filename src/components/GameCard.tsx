@@ -63,7 +63,10 @@ export function GameCard({ game, onChanged }: { game: GameListItem; onChanged?: 
   if (game.mode === "duel" && game.status !== "open") {
     const a = game.players.find((p) => p.user_id === me);
     const b = game.players.find((p) => p.user_id !== me);
-    const diff = (a?.score ?? 0) - (b?.score ?? 0) || (b?.total_ms ?? 0) - (a?.total_ms ?? 0);
+    const diff =
+      (a?.score ?? 0) - (b?.score ?? 0) ||
+      Number(!!b?.joker_used) - Number(!!a?.joker_used) ||
+      (b?.total_ms ?? 0) - (a?.total_ms ?? 0);
     outcome = diff > 0 ? "win" : diff < 0 ? "loss" : "draw";
   }
 

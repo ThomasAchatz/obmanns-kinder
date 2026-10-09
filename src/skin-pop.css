@@ -469,3 +469,19 @@ html[data-skin="pop"] .search-field input {
   border: 0 !important;
   box-shadow: none !important;
 }
+
+/* Weekend League */
+html[data-skin="pop"] .league-card,
+html[data-skin="pop"] .league-round {
+  border: 3px solid #111;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 #111;
+}
+html[data-skin="pop"] .league-card.is-live {
+  background: var(--cyan);
+}
+html[data-skin="pop"] .league-badge {
+  background: var(--pink);
+  color: #fff;
+  border: 2px solid #111;
+}

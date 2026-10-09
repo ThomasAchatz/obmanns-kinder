@@ -435,3 +435,16 @@ html[data-skin="heft"] .portrait-stack span {
 html[data-skin="heft"] .hard-input input {
   border: 0 !important;
 }
+
+/* Weekend League */
+html[data-skin="heft"] .league-card,
+html[data-skin="heft"] .league-round {
+  border: 1.5px solid #161514;
+}
+html[data-skin="heft"] .league-card.is-live {
+  box-shadow: 4px 4px 0 var(--red);
+}
+html[data-skin="heft"] .league-badge {
+  background: #161514;
+  color: #f3efe6;
+}

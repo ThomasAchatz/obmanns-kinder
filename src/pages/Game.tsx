@@ -50,7 +50,7 @@ function Intro({ game, onStart }: { game: GameDetails; onStart: () => void }) {
   const others = game.players.filter((p) => p.user_id !== profile!.id);
   const creator = game.players.find((p) => p.user_id === game.created_by);
   return (
-    <Page title={modeLabel[game.mode]} back={() => navigate("/")}>
+    <Page title={modeLabel[game.mode]} back={() => navigate(game.mode === "league" ? "/liga" : "/")}>
       <div className="intro">
         <Target shots={[]} size={160} label="Leere Scheibe" />
         {game.mode === "duel" && (
@@ -65,6 +65,9 @@ function Intro({ game, onStart }: { game: GameDetails; onStart: () => void }) {
             Gruppen-Challenge von {creator?.display_name} mit {game.players.length} Leuten. Alle bekommen dieselben Fragen.
           </p>
         )}
+        {game.mode === "league" && (
+          <p className="lead">Weekend League: Alle Angemeldeten bekommen dieselben Fragen. Spiel, wann du willst, bis Sonntag 23:59.</p>
+        )}
         {game.mode === "solo" && (
           <p className="lead">
             {game.category ? `${game.category.icon} ${game.category.name}: 5 Fragen zum Üben.` : "5 gemischte Fragen zum Üben."}
@@ -72,7 +75,7 @@ function Intro({ game, onStart }: { game: GameDetails; onStart: () => void }) {
         )}
         <ul className="rules">
           <li>5 Fragen, je 30 Sekunden</li>
-          <li>Ein 50:50-Joker für das ganze Spiel</li>
+          <li>Ein 50:50-Joker für das ganze Spiel. Bei Gleichstand gewinnt, wer ihn nicht genommen hat.</li>
           <li>Wer die App während einer Frage verlässt, verliert die Zeit dieser Frage</li>
         </ul>
         <button className="btn btn-primary btn-block btn-big" onClick={onStart}>
@@ -164,7 +167,7 @@ function Player({ game, onFinished }: { game: GameDetails; onFinished: () => voi
 
   if (error)
     return (
-      <Page title={modeLabel[game.mode]} back={() => navigate("/")}>
+      <Page title={modeLabel[game.mode]} back={() => navigate(game.mode === "league" ? "/liga" : "/")}>
         <ErrorBox error={error} retry={load} />
       </Page>
     );
@@ -176,7 +179,7 @@ function Player({ game, onFinished }: { game: GameDetails; onFinished: () => voi
   return (
     <main className={result ? "play has-next" : "play"}>
       <div className="play-top">
-        <button className="icon-btn" aria-label="Zurück zum Start" onClick={() => navigate("/")}>
+        <button className="icon-btn" aria-label="Zurück" onClick={() => navigate(game.mode === "league" ? "/liga" : "/")}>
           <Icon name="back" />
         </button>
         <div className="play-progress" aria-label={`Frage ${q.position} von 5`}>
@@ -295,8 +298,12 @@ function Result({ game, reload }: { game: GameDetails; reload: () => void }) {
     const other = game.players.find((p) => p.user_id !== me);
     if (game.status === "open") headline = other?.status === "pending" ? `Warten auf ${other.display_name}` : "Du bist dran";
     else if (mine.rank === 1 && other?.rank === 1) headline = "Unentschieden";
-    else if (mine.rank === 1) headline = mine.score === other?.score ? "Gewonnen, nach Zeit!" : "Gewonnen!";
-    else headline = mine.score === other?.score ? "Verloren, nach Zeit" : "Verloren";
+    else if (mine.rank === 1)
+      headline =
+        mine.score !== other?.score ? "Gewonnen!" : !!mine.joker_used !== !!other?.joker_used ? "Gewonnen, ohne 50:50!" : "Gewonnen, nach Zeit!";
+    else
+      headline =
+        mine.score !== other?.score ? "Verloren" : !!mine.joker_used !== !!other?.joker_used ? "Verloren wegen 50:50" : "Verloren, nach Zeit";
   } else if (game.mode === "challenge") {
     headline = game.status === "open" ? `${done.length} von ${game.players.length} haben gespielt` : `Platz ${mine.rank ?? "–"}`;
   } else {
@@ -304,7 +311,7 @@ function Result({ game, reload }: { game: GameDetails; reload: () => void }) {
   }
 
   return (
-    <Page title={modeLabel[game.mode]} back={() => navigate("/")}>
+    <Page title={modeLabel[game.mode]} back={() => navigate(game.mode === "league" ? "/liga" : "/")}>
       <h2 className="result-headline">{headline}</h2>
       {game.mode !== "solo" && game.status !== "open" && game.my_points && (
         <p className={game.my_points.counted ? "points-note" : "points-note is-off"}>
@@ -382,10 +389,17 @@ function Result({ game, reload }: { game: GameDetails; reload: () => void }) {
         </section>
       )}
 
-      {game.mode !== "solo" && game.status !== "open" && (
-        <button className="btn btn-primary btn-block" onClick={() => navigate("/spielen")}>
-          Neues Spiel
+      {game.mode === "league" ? (
+        <button className="btn btn-primary btn-block" onClick={() => navigate("/liga")}>
+          Zur Weekend League
         </button>
+      ) : (
+        game.mode !== "solo" &&
+        game.status !== "open" && (
+          <button className="btn btn-primary btn-block" onClick={() => navigate("/spielen")}>
+            Neues Spiel
+          </button>
+        )
       )}
     </Page>
   );

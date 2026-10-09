@@ -56,7 +56,7 @@ function MusicIntro({ game, onStart }: { game: MusicGameDetails; onStart: () => 
   const others = game.players.filter((p) => p.user_id !== profile!.id);
   const creator = game.players.find((p) => p.user_id === game.created_by);
   return (
-    <Page title={musicModeLabel[game.mode] + (game.hard ? " · Hard" : "")} back={() => navigate("/")}>
+    <Page title={musicModeLabel[game.mode] + (game.hard ? " · Hard" : "")} back={() => navigate(game.mode === "league" ? "/liga" : "/")}>
       <div className="intro">
         <Record size={170} label="Leere Platte" />
         {game.mode === "duel" && (
@@ -70,6 +70,9 @@ function MusicIntro({ game, onStart }: { game: MusicGameDetails; onStart: () => 
           <p className="lead">Musik-Challenge von {creator?.display_name} mit {game.players.length} Leuten. Alle hören dieselben Songs.</p>
         )}
         {game.mode === "solo" && <p className="lead">5 Songs quer durch alle Jahrzehnte zum Üben.</p>}
+        {game.mode === "league" && (
+          <p className="lead">Weekend League: Alle Angemeldeten hören dieselben Songs. Diese Runde zählt halb, also höchstens 5 Punkte.</p>
+        )}
         {game.hard ? (
           <ul className="rules">
             <li>Hard-Mode: keine Antworten zur Auswahl</li>
@@ -235,7 +238,7 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
 
   if (error)
     return (
-      <Page title={musicModeLabel[game.mode] + (game.hard ? " · Hard" : "")} back={() => navigate("/")}>
+      <Page title={musicModeLabel[game.mode] + (game.hard ? " · Hard" : "")} back={() => navigate(game.mode === "league" ? "/liga" : "/")}>
         <ErrorBox error={error} retry={load} />
       </Page>
     );
@@ -255,7 +258,7 @@ function MusicPlayer({ game, onFinished }: { game: MusicGameDetails; onFinished:
           aria-label="Zurück zum Start"
           onClick={() => {
             stopClip();
-            navigate("/");
+            navigate(game.mode === "league" ? "/liga" : "/");
           }}
         >
           <Icon name="back" />
@@ -461,7 +464,7 @@ function MusicResult({ game, reload }: { game: MusicGameDetails; reload: () => v
   }
 
   return (
-    <Page title={musicModeLabel[game.mode] + (game.hard ? " · Hard" : "")} back={() => navigate("/")}>
+    <Page title={musicModeLabel[game.mode] + (game.hard ? " · Hard" : "")} back={() => navigate(game.mode === "league" ? "/liga" : "/")}>
       <h2 className="result-headline">{headline}</h2>
       {game.mode !== "solo" && game.status !== "open" && game.my_points && (
         <p className={game.my_points.counted ? "points-note" : "points-note is-off"}>
@@ -590,10 +593,17 @@ function MusicResult({ game, reload }: { game: MusicGameDetails; reload: () => v
         </section>
       )}
 
-      {game.mode !== "solo" && game.status !== "open" && (
-        <button className="btn btn-primary btn-block" onClick={() => navigate(game.hard ? "/spielen?art=musik&hard=1" : "/spielen?art=musik")}>
-          Neue Musikrunde
+      {game.mode === "league" ? (
+        <button className="btn btn-primary btn-block" onClick={() => navigate("/liga")}>
+          Zur Weekend League
         </button>
+      ) : (
+        game.mode !== "solo" &&
+        game.status !== "open" && (
+          <button className="btn btn-primary btn-block" onClick={() => navigate(game.hard ? "/spielen?art=musik&hard=1" : "/spielen?art=musik")}>
+            Neue Musikrunde
+          </button>
+        )
       )}
     </Page>
   );

@@ -1,0 +1,33 @@
+# Weekend League: stößt die zeitgesteuerten Schritte an (Erinnerung Freitag,
+# Start Samstag 0 Uhr, Abschluss Montag 0 Uhr). Die App macht das zusätzlich
+# beim Öffnen der League, dieser Zeitplan sorgt für pünktliche Pushes.
+# Zeiten in UTC, je zwei Einträge für Sommer- und Winterzeit.
+name: Weekend League
+
+on:
+  schedule:
+    - cron: "5 15 * * 5"
+    - cron: "5 16 * * 5"
+    - cron: "5 22 * * 5"
+    - cron: "5 23 * * 5"
+    - cron: "5 22 * * 0"
+    - cron: "5 23 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: League anstoßen
+        env:
+          URL: ${{ vars.VITE_SUPABASE_URL }}
+          KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$URL" ] || [ -z "$KEY" ]; then echo "::warning::Supabase-Variablen fehlen."; exit 0; fi
+          code=$(curl -s -o /tmp/out -w "%{http_code}" -X POST "$URL/rest/v1/rpc/league_tick" \
+            -H "apikey: $KEY" -H "Content-Type: application/json" -d '{}')
+          echo "Antwort: $code $(cat /tmp/out)"
+          [ "$code" = "200" ] || exit 1

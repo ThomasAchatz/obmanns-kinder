@@ -9,7 +9,7 @@ export type Profile = {
 export type Category = { id: number; name: string; icon: string; sort_order: number };
 export type CategoryRef = { name: string; icon: string };
 
-export type Mode = "solo" | "duel" | "challenge";
+export type Mode = "solo" | "duel" | "challenge" | "league";
 export type Kind = "quiz" | "music" | "bild";
 
 export type GameListItem = {
@@ -25,7 +25,7 @@ export type GameListItem = {
   my_turn: boolean;
   can_nudge: boolean;
   category: CategoryRef | null;
-  players: { user_id: string; display_name: string; status: "pending" | "done"; score: number | null; total_ms: number | null }[];
+  players: { user_id: string; display_name: string; status: "pending" | "done"; score: number | null; total_ms: number | null; joker_used?: boolean | null }[];
 };
 
 export type CurrentQuestion = {
@@ -88,6 +88,7 @@ export type GameDetails = {
     score: number | null;
     total_ms: number | null;
     rank: number | null;
+    joker_used?: boolean | null;
   }[];
   questions: {
     position: number;
@@ -288,3 +289,31 @@ export type BildCounts = { total: number; easy: number; women: number; by_sparte
 export type NamePick = { name: string; sub: string | null };
 
 export type Confusion = { name: string; image: string; taken: string; n: number };
+
+// ---------------------------------------------------------------------
+// Weekend League
+// ---------------------------------------------------------------------
+export type LeagueRound = {
+  position: number;
+  kind: Kind;
+  hard: boolean;
+  game_id: number | null;
+  my_status: "pending" | "done" | null;
+  my_points: number | null;
+  done_count: number;
+};
+export type LeagueStanding = { user_id: string; display_name: string; points: number; rounds: number; total_ms: number; rank: number };
+export type League = {
+  id: number;
+  week_start: string;
+  signup_until: string;
+  starts_at: string;
+  ends_at: string;
+  phase: "signup" | "running" | "done";
+  started: boolean;
+  joined: boolean;
+  members: { user_id: string; display_name: string }[];
+  rounds: LeagueRound[];
+  standings: LeagueStanding[];
+};
+export type LeagueStatus = { current: League; last: League | null };

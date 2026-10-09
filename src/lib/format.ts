@@ -18,11 +18,11 @@ export function monthName(date: string | Date): string {
   return new Date(date).toLocaleDateString("de-DE", { month: "long", year: "numeric" });
 }
 
-export const modeLabel = { solo: "Solo-Quiz", duel: "Duell", challenge: "Gruppen-Challenge" } as const;
+export const modeLabel = { solo: "Solo-Quiz", duel: "Duell", challenge: "Gruppen-Challenge", league: "Weekend League" } as const;
 
-export const musicModeLabel = { solo: "Musik solo", duel: "Musik-Duell", challenge: "Musik-Challenge" } as const;
+export const musicModeLabel = { solo: "Musik solo", duel: "Musik-Duell", challenge: "Musik-Challenge", league: "Weekend League · Musik" } as const;
 
-export const bildModeLabel = { solo: "Bilder solo", duel: "Bilder-Duell", challenge: "Bilder-Challenge" } as const;
+export const bildModeLabel = { solo: "Bilder solo", duel: "Bilder-Duell", challenge: "Bilder-Challenge", league: "Weekend League · Bilder" } as const;
 
 /** Sparten der Bilderrunde */
 export const SPARTEN = ["Musik", "Film & TV", "Sport", "Politik & Adel", "Wissenschaft & Kultur"] as const;

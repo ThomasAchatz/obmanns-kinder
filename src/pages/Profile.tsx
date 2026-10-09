@@ -12,6 +12,14 @@ type CatStat = { category_id: number; name: string; icon: string; answered: numb
 type Leader = { category_id: number; name: string; icon: string; user_id: string | null; display_name: string | null; answered: number | null; rate: number | null };
 type Winner = { month: string; points: number; user_id: string; profiles: { display_name: string } | null };
 
+/** Montag der Vorwoche als JJJJ-MM-TT (für die Wochen-Rangliste) */
+function lastMonday(): string {
+  const d = new Date();
+  const day = (d.getDay() + 6) % 7; // Montag = 0
+  d.setDate(d.getDate() - day - 7);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 const KIND_NAME: Record<Kind, string> = { quiz: "Quiz", music: "Musik", bild: "Bilder" };
 
 const APK_URL = "https://github.com/ThomasAchatz/obmanns-kinder/releases/latest/download/obmanns-kinder.apk";
@@ -21,10 +29,14 @@ const showApkLink =
 
 export function ProfilePage() {
   const { profile, signOut, reloadProfile } = useAuth();
-  const [period, setPeriod] = useState<"month" | "all">("month");
+  const [period, setPeriod] = useState<"week" | "month" | "all">("week");
   const [kind, setKind] = useState<Kind>("quiz");
   const board = useLoad(() => rpc<LeaderRow[]>("leaderboard", { p_period: period, p_kind: kind }), [period, kind]);
   const day = useLoad(() => rpc<DayStatus>("my_day_status", { p_kind: kind }), [kind]);
+  const lastWeek = useLoad(
+    () => (period === "week" ? rpc<LeaderRow[]>("leaderboard", { p_period: "week", p_month: lastMonday(), p_kind: kind }) : Promise.resolve([])),
+    [period, kind],
+  );
   const stats = useLoad(() => rpc<CatStat[]>("category_stats"));
   const leaders = useLoad(() => rpc<Leader[]>("category_leaders"));
   const winners = useLoad(async () => {
@@ -98,6 +110,9 @@ export function ProfilePage() {
         <div className="section-head">
           <h2>Rangliste {KIND_NAME[kind]}</h2>
           <div className="segmented segmented-small" role="tablist">
+            <button role="tab" aria-selected={period === "week"} className={period === "week" ? "seg active" : "seg"} onClick={() => setPeriod("week")}>
+              Woche
+            </button>
             <button role="tab" aria-selected={period === "month"} className={period === "month" ? "seg active" : "seg"} onClick={() => setPeriod("month")}>
               {monthName(new Date()).split(" ")[0]}
             </button>
@@ -110,7 +125,7 @@ export function ProfilePage() {
         {board.loading && !board.data ? (
           <Loading />
         ) : rows.length === 0 ? (
-          <p className="muted">In diesem Monat wurde noch kein {kind === "music" ? "Musik-Duell" : kind === "bild" ? "Bilder-Duell" : "Duell"} beendet.</p>
+          <p className="muted">{period === "week" ? "In dieser Woche" : "In diesem Monat"} wurde noch kein {kind === "music" ? "Musik-Duell" : kind === "bild" ? "Bilder-Duell" : "Duell"} beendet.</p>
         ) : (
           <table className="board">
             <thead>
@@ -137,6 +152,16 @@ export function ProfilePage() {
             </tbody>
           </table>
         )}
+        {period === "week" && (lastWeek.data ?? []).filter((r) => r.games > 0 && r.points > 0).length > 0 && (
+          <p className="last-week">
+            Letzte Woche:{" "}
+            {(lastWeek.data ?? [])
+              .filter((r) => r.games > 0 && r.points > 0)
+              .slice(0, 3)
+              .map((r, i) => `${i + 1}. ${r.display_name} (${r.points} P.)`)
+              .join(" · ")}
+          </p>
+        )}
         {day.data && (
           <p className="day-status">
             Heute: {day.data.counted_games} von {day.data.limit_games} Wertungsspielen · {day.data.points} von {day.data.limit_points} Punkten
@@ -145,7 +170,7 @@ export function ProfilePage() {
         <p className="muted small">
           {kind === "music" && "Musik hat eine eigene Rangliste und ein eigenes Tageslimit. Pro Song gibt es bis zu 2 Treffer (Interpret und Titel). "}
           {kind === "bild" && "Bilder haben eine eigene Rangliste und ein eigenes Tageslimit. Pro erkanntem Gesicht gibt es einen Treffer. "}
-          Duell: Sieg 3, Unentschieden 1 Punkt. Challenge: Platz 1–3 bekommt 3/2/1 Punkte. Pro Tag zählen nur die ersten 3 beendeten
+          Woche: Montag 0 Uhr bis Sonntag 23:59. Duell: Sieg 3, Unentschieden 1 Punkt. Bei gleicher Punktzahl gewinnt, wer kein 50:50 genommen hat, sonst wer schneller war. Challenge: Platz 1–3 bekommt 3/2/1 Punkte. Pro Tag zählen nur die ersten 3 beendeten
           Spiele, also höchstens 9 Punkte. Weiterspielen geht immer.
         </p>
       </section>

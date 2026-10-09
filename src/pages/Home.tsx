@@ -6,6 +6,7 @@ import { rpc, supabase } from "../lib/supabase";
 import { pushState, type PushState } from "../lib/push";
 import type { Fact, GameListItem } from "../lib/types";
 import { GameCard } from "../components/GameCard";
+import { LeagueCard } from "./League";
 import { Empty, ErrorBox, Loading, Page, StoredImage } from "../components/ui";
 
 export function HomePage() {
@@ -40,6 +41,8 @@ export function HomePage() {
       {push === "needs-install" && (
         <div className="notice">Für Benachrichtigungen auf dem iPhone: Teilen → „Zum Home-Bildschirm“, dann die App von dort öffnen.</div>
       )}
+
+      <LeagueCard />
 
       <ErrorBox error={games.error} retry={games.reload} />
       {games.loading && !games.data ? (
