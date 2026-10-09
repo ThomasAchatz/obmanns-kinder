@@ -1,0 +1,32 @@
+Katalog: 8358
+Shortlist: 840 Frauen 560 Männer 280
+  Beschreibungen 0 / 8358
+  Beschreibungen 1000 / 8358
+  Beschreibungen 2000 / 8358
+  Beschreibungen 3000 / 8358
+  Beschreibungen 4000 / 8358
+  Beschreibungen 5000 / 8358
+  Beschreibungen 6000 / 8358
+  Beschreibungen 7000 / 8358
+  Beschreibungen 8000 / 8358
+Bildinfos: 1206
+YuNet geladen
+  Fotos 0 / 840
+  Fotos 50 / 840
+  Fotos 100 / 840
+  Fotos 150 / 840
+  Fotos 200 / 840
+  Fotos 250 / 840
+  Fotos 300 / 840
+  Fotos 350 / 840
+  Fotos 400 / 840
+  Fotos 450 / 840
+  Fotos 500 / 840
+  Fotos 550 / 840
+  Fotos 600 / 840
+  Fotos 650 / 840
+  Fotos 700 / 840
+  Fotos 750 / 840
+  Fotos 800 / 840
+Status: Counter({'ok': 821, 'kein Gesicht': 17, 'kein Foto': 2})
+Name im Bild: 0 mehrere Gesichter: 13
