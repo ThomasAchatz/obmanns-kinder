@@ -54,7 +54,7 @@ jobs:
       - uses: supabase/setup-cli@v1
         if: env.SUPABASE_ACCESS_TOKEN != ''
         with:
-          version: latest
+          version: 2.120.0
 
       - name: In Supabase einspielen
         if: env.SUPABASE_ACCESS_TOKEN != ''
