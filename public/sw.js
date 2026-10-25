@@ -1,5 +1,5 @@
 /* Service Worker für Obmanns Kinder: Offline-Cache, Updates und Push. */
-const CACHE = "ok-v11";
+const CACHE = "ok-v12";
 const SCOPE = self.registration.scope; // z. B. https://name.github.io/obmanns-kinder/
 
 self.addEventListener("install", (event) => {
@@ -72,6 +72,14 @@ self.addEventListener("push", (event) => {
       renotify: true,
     }),
   );
+});
+
+// Browser tauschen Push-Abos manchmal aus. Dann gleich neu abonnieren;
+// beim nächsten Öffnen meldet die App das neue Abo dem Server.
+self.addEventListener("pushsubscriptionchange", (event) => {
+  const key = event.oldSubscription && event.oldSubscription.options && event.oldSubscription.options.applicationServerKey;
+  if (!key) return;
+  event.waitUntil(self.registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key }).catch(() => {}));
 });
 
 self.addEventListener("notificationclick", (event) => {

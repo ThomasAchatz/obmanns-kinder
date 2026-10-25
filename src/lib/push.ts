@@ -42,6 +42,11 @@ export async function enablePush(): Promise<void> {
     userVisibleOnly: true,
     applicationServerKey: base64UrlToUint8(publicKey) as BufferSource,
   });
+  try {
+    localStorage.setItem(WANTED, "1");
+  } catch {
+    /* egal */
+  }
   const json = sub.toJSON();
   await rpc("save_push_subscription", {
     p_endpoint: sub.endpoint,
@@ -50,7 +55,38 @@ export async function enablePush(): Promise<void> {
   });
 }
 
+const WANTED = "obmanns-push";
+
+/**
+ * Beim Öffnen der App: Hat der Browser das Abo verloren (Browser erneuern Abos
+ * gelegentlich oder werfen sie weg), wird es still neu angelegt, solange die
+ * Erlaubnis noch da ist. Ein vorhandenes Abo wird erneut beim Server gemeldet,
+ * falls es dort gelöscht wurde.
+ */
+export async function ensurePush(): Promise<void> {
+  try {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) return;
+    if (Notification.permission !== "granted") return;
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (sub) {
+      localStorage.setItem(WANTED, "1");
+      const json = sub.toJSON();
+      await rpc("save_push_subscription", { p_endpoint: sub.endpoint, p_p256dh: json.keys?.p256dh, p_auth: json.keys?.auth });
+      return;
+    }
+    if (localStorage.getItem(WANTED) === "1") await enablePush();
+  } catch {
+    /* still bleiben, der Schalter im Profil zeigt den Stand */
+  }
+}
+
 export async function disablePush(): Promise<void> {
+  try {
+    localStorage.removeItem(WANTED);
+  } catch {
+    /* egal */
+  }
   const reg = await getRegistration();
   const sub = await reg?.pushManager.getSubscription();
   if (!sub) return;

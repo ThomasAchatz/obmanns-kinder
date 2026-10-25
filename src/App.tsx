@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "./lib/auth";
 import { match, navigate, useRoute } from "./lib/router";
 import { isConfigured } from "./lib/supabase";
+import { ensurePush } from "./lib/push";
 import { Icon, type IconName } from "./components/Icon";
 import { Loading, Toaster } from "./components/ui";
 import { LoginPage } from "./pages/Login";
@@ -119,6 +120,16 @@ export function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [route]);
+
+  // Benachrichtigungen am Leben halten (Abo erneuern, falls der Browser es verloren hat)
+  const userId = profile?.id;
+  useEffect(() => {
+    if (!userId || import.meta.env.DEV) return;
+    ensurePush();
+    const onVisible = () => document.visibilityState === "visible" && ensurePush();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [userId]);
 
   if (!isConfigured) {
     return (
