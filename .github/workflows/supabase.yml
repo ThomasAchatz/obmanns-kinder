@@ -44,11 +44,22 @@ jobs:
 
       - name: Projekt verknüpfen
         if: steps.check.outputs.ready == 'true'
-        run: supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+        run: |
+          if ! supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD" > /tmp/link.log 2>&1; then
+            cat /tmp/link.log
+            echo "::error::supabase link: $(tail -c 500 /tmp/link.log | tr '\n' ' ')"
+            exit 1
+          fi
 
       - name: Datenbank aktualisieren
         if: steps.check.outputs.ready == 'true'
-        run: supabase db push --password "$SUPABASE_DB_PASSWORD"
+        run: |
+          if ! supabase db push --password "$SUPABASE_DB_PASSWORD" > /tmp/push.log 2>&1; then
+            cat /tmp/push.log
+            echo "::error::supabase db push: $(tail -c 500 /tmp/push.log | tr '\n' ' ')"
+            exit 1
+          fi
+          cat /tmp/push.log
 
       - name: Edge Functions veröffentlichen
         if: steps.check.outputs.ready == 'true'
