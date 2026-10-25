@@ -30,4 +30,4 @@ jobs:
           code=$(curl -s -o /tmp/out -w "%{http_code}" -X POST "$URL/rest/v1/rpc/league_tick" \
             -H "apikey: $KEY" -H "Content-Type: application/json" -d '{}')
           echo "Antwort: $code $(cat /tmp/out)"
-          [ "$code" = "200" ] || exit 1
+          if [ "$code" != "200" ]; then echo "::error::league_tick HTTP $code: $(head -c 600 /tmp/out | tr '\n' ' ')"; exit 1; fi
